@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+.hide-nav{
+    @apply flex flex-col items-center justify-center space-y-8 w-screen h-screen bg-white md:hidden absolute left-full top-0
+}
+
+.show-nav{
+    @apply flex flex-col items-center justify-center space-y-8 w-screen h-screen bg-white md:hidden absolute left-0 top-0
+}

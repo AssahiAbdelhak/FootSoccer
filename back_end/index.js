@@ -31,7 +31,7 @@ app.get('/users',{preHandler : authenticate},getAllUsers)
 app.get('/users/:id',{preHandler : authenticate},getUser)
 app.patch('/users/:id',{preHandler : authenticateAsUser},updateUserTodb)
 app.delete('/users/:id',{preHandler : authenticateAsUser},deleteUserTodb)
-app.post('/users',addUserTodb)
+app.post('/users',addUserTodb) 
 
 /** route pour l'authentification */
 app.post('/sign-up',signIn)

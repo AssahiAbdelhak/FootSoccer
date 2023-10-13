@@ -19,7 +19,6 @@ export const up = async function(knex) {
         await knex.schema.createTable('centres',function(table) {
             table.increments('id_centre').primary();
             table.string('nom_centre').notNullable().unique();
-            table.float('tarif',3,1).notNullable();
             table.timestamps(true,true);
         });
         await knex.schema.createTable('terrains',function(table) {
@@ -27,6 +26,7 @@ export const up = async function(knex) {
             table.integer('id_centre');
             table.foreign('id_centre').references('centres.id_centre');
             table.boolean('est_filme').notNullable();
+            table.float('tarif',3,1).notNullable();
             table.string('localisation').checkIn(['interieur','exterieur']);
             table.timestamps(true,true);
         })
@@ -45,9 +45,11 @@ export const up = async function(knex) {
             table.timestamps(true,true);
         });
         await knex.schema.createTable('resa_terrain',(table) => {
-            table.integer('id_terrain').primary().references('terrains.id_terrain');
-            table.time('debut').notNullable();
+            table.integer('id_terrain').references('terrains.id_terrain');
+            table.date('date').notNullable();
+            table.time('debut');
             table.integer('duree').notNullable();
+            table.primary(['id_terrain','date','debut'])
             table.timestamps(true,true);
         });
         await knex.schema.createTable('resa_utilisateurs',(table) => {

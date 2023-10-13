@@ -11,9 +11,9 @@ export default {
   development: {
     client: 'postgresql',
     connection: {
-      database: process.env.DATA_BASE,
-      user:     process.env.USERNAME,
-      password: process.env.PASSWORD
+      database: 'site_foot',
+      user:     'postgres',
+      password: 'admin'
     },
     migrations: {
       tableName: 'knex_migrations'

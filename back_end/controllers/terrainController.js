@@ -1,10 +1,24 @@
 
-import knex from "knex";
 import { db } from "../dataBase/db.js"
 import { terrainSchema } from "../requestValidation/terrainSchema.js";
 
 export const getAllTerrains = async (req,res) => {
-    let elems = await db('terrains').select('*');
+    res.header("Access-Control-Allow-Origin", "*");
+    const {id_centre,date} = req.query
+    let elems
+    if(date != null){
+    elems = await db('terrains').join("resa_terrain","terrains.id_terrain","resa_terrain.id_terrain").select('terrains.id_terrain','est_filme','localisation','debut').where({
+        id_centre,
+        date
+    })
+    }else if(id_centre != null){
+        elems = await db('terrains').select('id_terrain','est_filme','localisation').where({
+            id_centre
+        })
+    }else{
+        elems = await db('terrains').select('*')
+    }
+
     res.status(200).send({
         success : true,
         length : elems.length,
