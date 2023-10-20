@@ -1,15 +1,34 @@
 import Fastify from 'fastify'
+import { fastifyExpress } from '@fastify/express';
 import { addCentreTodb, deleteCentreTodb, getAllCentres, getCentre, updateCentreTodb } from './controllers/centreController.js';
 import { addTerrainTodb, deleteTerrainTodb, getAllTerrains, getTerrain, updateTerrainTodb } from './controllers/terrainController.js';
-import { addUserTodb, deleteUserTodb, getAllUsers, getUser, updateUserTodb } from './controllers/userController.js';
+import { addUserTodb, deleteUserTodb, getAllUsers, getUser, updateUserTodb, verifyUser } from './controllers/userController.js';
 import { signIn } from './controllers/authController.js';
-import {authenticate, authenticateAsUser} from './auth/auth.js';
-import { getAllJoueursReserves, getAllTerrainsReserves } from './controllers/reservationController.js';
+import {authenticate, authenticateAsUser,decodejwt} from './auth/auth.js';
+import { addJoueursReserves, addTerrainsReserves, getAllJoueursReserves, getAllTerrainsReserves } from './controllers/reservationController.js';
 
 
 
 export const app = Fastify();
+await app.register(fastifyExpress)
+app.use(function (req, res, next) {
+    console.log('run middleware')
+    // Website you wish to allow to connect
+    res.header('Access-Control-Allow-Origin', '*');
 
+    // Request methods you wish to allow
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.header('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
 
 /*route pour la table centres*/ 
 app.get('/centres',getAllCentres)
@@ -29,16 +48,20 @@ app.post('/terrains',{preHandler : authenticate},addTerrainTodb)
 /** pour simlifier admin est l'utilisateur avec l'id 1 */
 app.get('/users',{preHandler : authenticate},getAllUsers)
 app.get('/users/:id',{preHandler : authenticate},getUser)
-app.patch('/users/:id',{preHandler : authenticateAsUser},updateUserTodb)
+app.patch('/users/:id', { preHandler: authenticate },updateUserTodb)
 app.delete('/users/:id',{preHandler : authenticateAsUser},deleteUserTodb)
 app.post('/users',addUserTodb) 
+app.post('/users/verifyCompte/:id',verifyUser) 
 
 /** route pour l'authentification */
 app.post('/sign-up',signIn)
+app.get('/decode_jwt', decodejwt)
 
 /**route pour les tables de la reservation */
-app.get('/reservation/terrain', getAllTerrainsReserves)
-app.get('/reservation/joueur', getAllJoueursReserves)
+app.get('/reservation/terrain/:id', getAllTerrainsReserves)
+app.post('/reservation/terrain', addTerrainsReserves)
+app.get('/reservation/joueur/:id', getAllJoueursReserves)
+app.post('/reservation/joueur', addJoueursReserves)
 
 
 //app.get('/utilisateurs',{preHandler : authenticate},getAllUsers);

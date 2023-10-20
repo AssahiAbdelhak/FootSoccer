@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^3.11.0",
     "axios": "^1.5.1",
     "dayjs": "^1.11.10",
+    "jsonwebtoken": "^9.0.2",
+    "mailslurp-client": "^15.17.2",
     "pinia": "^2.1.6",
     "tailwindcss": "^3.3.3",
     "vue": "^3.3.4",

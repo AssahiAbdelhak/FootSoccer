@@ -3,10 +3,10 @@
         <div>
             <div class="list-date flex items-center justify-between px-4 my-5">
                 <span class="fleche cursor-pointer font-bold text-2xl">&lt;</span>
-                <span class="date cursor-pointer text-2xl" @click="() => date_param = today">{{today}}</span>
+                <span class="date cursor-pointer text-2xl" @click="() => date_param = date">{{today}}</span>
                 
-                <span class="date text-gray-500 cursor-pointer text-2xl" v-for="day in days" :key="day" @click="() => date_param = day" >
-                    {{day}}
+                <span class="date text-gray-500 cursor-pointer text-2xl" v-for="day in days" :key="day" @click="() => date_param = day[1]" >
+                    {{day[0]}}
                     </span>
                 <span class="fleche cursor-pointer font-bold text-2xl">&gt;</span>
             </div>
@@ -17,7 +17,8 @@
             </div>
             <div>
                 <div >
-                    <ReservationList :dispo="foot.dispo" :heure="foot.heure" v-for="foot in available" :key="foot" />
+                    <ReservationList :dispo="foot.dispo" :day="date_param" :heure="foot.heure" v-for="foot in available" :key="foot" />
+                    
                 </div>
                 
             </div>
@@ -33,11 +34,11 @@
                 <div class="py-4 flex flex-col gap-3 h-full justify-around">
                     <h2>TYPE TERRAIN : </h2>
                     <div class="flex justify-around items-center">
-                        <div>
+                        <div @click="() => type='interieur'" >
                             <input type="radio" name="type" id="type-1">
                             <label class="ml-2 mr-6" for="type-1">INTERIEUR</label>
                         </div>
-                        <div>
+                        <div @click="() => type='exterieur'">
                             <input type="radio" name="type" id="type-2">
                             <label for="type-2"  class="ml-2">EXTERIEUR</label>
                         </div>
@@ -45,16 +46,13 @@
                     <h2>HORRAIRE A PARTIR DE : </h2>
                     <div class="flex justify-center items-center gap-2">
                         <span class="fleche cursor-pointer font-bold text-2xl">&lt;</span>
-                        <h3 class="border w-11 h-11 p-2 flex items-center justify-center cursor-pointer rounded bg-gray-100"><i class="fa-solid fa-ban"></i></h3>
-                        <h3 class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">10H</h3>
-                        <h3 class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">11H</h3>
-                        <h3 class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">12H</h3>
-                        <h3 class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">13H</h3>
-                        <h3 class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">14H</h3>
-                        <h3 class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">15H</h3>
+                        <h3  class="border w-11 h-11 p-2 flex items-center justify-center cursor-pointer rounded bg-gray-100"><i class="fa-solid fa-ban"></i></h3>
+                        <h3 @click="() => startFrom=15" class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">15H</h3>
+                        <h3 @click="() => startFrom=16" class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">16H</h3>
+                        <h3 @click="() => startFrom=17" class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">17H</h3>
                         <span class="fleche cursor-pointer font-bold text-2xl">&gt;</span>
                     </div>
-                    <button class="bg-blue-500 mt-7 mb-5 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                    <button @click="appliquerFilter" class="bg-blue-500 mt-7 mb-5 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
                             APPLIQUER
                     </button>
                 </div>
@@ -65,34 +63,40 @@
 </template>
 
 <script setup>
-    import { computed, ref, watch } from 'vue'
+    import { computed, onMounted, onUpdated, ref, watch, watchEffect,  } from 'vue'
     import dayjs from 'dayjs'
     import axios from 'axios'
     import ReservationList from '../components/reservationList.vue'
 
+    const type = ref(null)
+    const startFrom = ref(null)
+
+    let [id_centre,date] = location.href.split('?')[1].split('&')
+    date = date.split('=')[1]
+
     const days = []
     let available = ref([])
-    let today = dayjs().format('DD/MM - ddd')
+    let today = dayjs(date).format('DD/MM - ddd')
     for(let i=1; i < 5 ; i++){
-        days.push(dayjs().add(i,'days').format('DD/MM - ddd'))
+        days.push([dayjs(date).add(i,'days').format('DD/MM - ddd'),dayjs(date).add(i,'days').format('YYYY-MM-DD')])
     }
-let [id_centre,date] = location.href.split('?')[1].split('&')
+    console.log(days)
+    
     const optionsTabIsClosed = ref(true)
     const date_param = ref(date)
-    
-    watch(date_param,() => console.log('date changed'))
-    
-    let allTerrains = await computed((await axios.get('http://localhost:8080/terrains?'+id_centre)).data.data) 
-    let response = computed((await axios.get('http://localhost:8080/terrains?'+id_centre+'&'+date_param.value)).data.data)
+    let save = []
+    const load_disponibilite = async () => {
+        available.value = []
+        console.log('date_param')
+        console.log(date_param.value)
+    let allTerrains =  (await axios.get('http://localhost:8080/terrains?'+id_centre)).data.data
+    let response = (await axios.get('http://localhost:8080/terrains?'+id_centre+'&date='+date_param.value)).data.data
     const start = dayjs('2023-10-13 15:00:00')
     const duration = 3
 
-console.log(allTerrains.value)
-console.log(response.value)
-
     for(let i = 0 ; i < duration ; i++){
         let obj = {
-            heure : start.add(i,'hours').format('HH:mm:ss'),
+            heure : start.add(i,'hours').format('HH'),
             dispo : {
                 interieur_filme : [],
                 interieur_non_filme : [],
@@ -102,8 +106,8 @@ console.log(response.value)
             
         }
         
-        let x = response.value.filter((a) => a.debut == obj.heure)
-        for (const ter of allTerrains.value){
+        let x = response.filter((a) => a.debut == obj.heure)
+        for (const ter of allTerrains){
             let found = false
             for(const reserved of x){
                 if(ter.id_terrain == reserved.id_terrain){
@@ -123,8 +127,25 @@ console.log(response.value)
             }   
         }
         available.value.push(obj)
+        save = available.value
     }
-    console.log(available.value)
+    }
+
+    const appliquerFilter = () => {
+        available.value = save
+        if(type.value != null){
+            available.value = available.value.filter(a => a.dispo[type.value+'_filme'].length > 0 || a.dispo[type.value+'_non_filme'].length > 0)
+        }else if(startFrom.value != null){
+            available.value = available.value.filter(a => a.heure.split(':')[0]>=startFrom.value)
+        }else{
+            console.log('no')
+        }
+        optionsTabIsClosed.value = true
+    }
+
+    watch(date_param,() => load_disponibilite())
+    onMounted(() => load_disponibilite())
+    
 </script>
 
 <style>

@@ -5,6 +5,7 @@ import { terrainSchema } from "../requestValidation/terrainSchema.js";
 export const getAllTerrains = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
     const {id_centre,date} = req.query
+    console.log(req.query)
     let elems
     if(date != null){
     elems = await db('terrains').join("resa_terrain","terrains.id_terrain","resa_terrain.id_terrain").select('terrains.id_terrain','est_filme','localisation','debut').where({
@@ -27,6 +28,7 @@ export const getAllTerrains = async (req,res) => {
 }
 
 export const getTerrain = async (req,res) => {
+    res.header("Access-Control-Allow-Origin", "*");
     let elem = await db('terrains').select('*').where('id_terrain','=',req.params.id);
     res.status(200).send({
         success : true,
