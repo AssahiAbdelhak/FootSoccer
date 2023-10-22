@@ -13,6 +13,7 @@ export const getAllCentres = async (req,res) => {
     })
 }
 
+
 export const getCentre = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
     let elem = await db('centres').select('*').where('id_centre','=',req.params.id);

@@ -4,9 +4,9 @@
         <div class="flex flex-col justify-center gap-16 items-center h-full ">
             <div class="flex flex-col gap-1 w-full justify-center items-center text-center text-3xl font-bold  tracking-widest leading-loose uppercase">
                 <span class="block">FOOTSOCCER</span> 
-                <span>c'est 15 centres <i class="fa-solid inline-block fa-warehouse"></i></span> 
-                <span>100 terrains <i class="fa-solid fa-futbol"></i></span>
-                <span>et 1000 utilisateurs <i class="fa-solid fa-person"></i></span>
+                <span>c'est {{ count_centres }} centres <i class="fa-solid inline-block fa-warehouse"></i></span> 
+                <span>{{ count_terrins }} terrains <i class="fa-solid fa-futbol"></i></span>
+                <span>et {{ count_users }} utilisateurs <i class="fa-solid fa-person"></i></span>
                 <span>dans toute la france</span>
             </div>
             <form action="/reserve" class="w-3/4">
@@ -44,7 +44,12 @@ import { ref } from "vue"
 import {useUserStore} from '../stores/user.js'
 
 const userStore = useUserStore()
-const centres = (await axios.get('http://localhost:8080/centres')).data.data
+const res_centres = (await axios.get('http://localhost:8080/centres')).data
+const count_terrins = (await axios.get('http://localhost:8080/terrains/count')).data.length
+const count_users = (await axios.get('http://localhost:8080/users/count')).data.length
+const count_centres = res_centres.length
+
+const centres = res_centres.data
 const date_ajd = dayjs().format('YYYY-MM-DD')
 
 const token = localStorage.getItem('token')

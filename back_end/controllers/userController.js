@@ -13,6 +13,14 @@ export const getAllUsers = async (req,res) => {
         data : elems
     })
 }
+export const getAllUsersCount = async (req,res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    let elems = await db('utilisateurs').select('*');
+    res.status(200).send({
+        success : true,
+        length : elems.length
+    })
+}
 export const userExiste = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
     let elems = await db('utilisateurs').select('*').where('id_utilisateur','=',req.params.id);

@@ -1,8 +1,8 @@
 import Fastify from 'fastify'
 import { fastifyExpress } from '@fastify/express';
 import { addCentreTodb, deleteCentreTodb, getAllCentres, getCentre, updateCentreTodb } from './controllers/centreController.js';
-import { addTerrainTodb, deleteTerrainTodb, getAllTerrains, getTerrain, updateTerrainTodb } from './controllers/terrainController.js';
-import { addUserTodb, deleteUserTodb, getAllUsers, getUser, updateUserTodb, userExiste, verifyUser } from './controllers/userController.js';
+import { addTerrainTodb, deleteTerrainTodb, getAllTerrains, getAllTerrainsCount, getTerrain, updateTerrainTodb } from './controllers/terrainController.js';
+import { addUserTodb, deleteUserTodb, getAllUsers, getAllUsersCount, getUser, updateUserTodb, userExiste, verifyUser } from './controllers/userController.js';
 import { signIn } from './controllers/authController.js';
 import {authenticate, authenticateAsUser,decodejwt} from './auth/auth.js';
 import { addJoueursReserves, addTerrainsReserves, getAllJoueursReserves, getAllTerrainsReserves } from './controllers/reservationController.js';
@@ -39,6 +39,7 @@ app.post('/centres',{preHandler : authenticate},addCentreTodb)
 
 /*route pour la table terrains*/ 
 app.get('/terrains',getAllTerrains)
+app.get('/terrains/count',getAllTerrainsCount)
 app.get('/terrains/:id',getTerrain)
 app.patch('/terrains/:id',{preHandler : authenticate},updateTerrainTodb)
 app.delete('/terrains/:id',{preHandler : authenticate},deleteTerrainTodb)
@@ -47,6 +48,7 @@ app.post('/terrains',{preHandler : authenticate},addTerrainTodb)
 /*route pour la table utilisateurs*/ 
 /** pour simlifier admin est l'utilisateur avec l'id 1 */
 app.get('/users',{preHandler : authenticate},getAllUsers)
+app.get('/users/count',getAllUsersCount)
 app.get('/user/:id',userExiste)
 app.get('/users/:id',{preHandler : authenticate},getUser)
 app.patch('/users/:id', { preHandler: authenticate },updateUserTodb)

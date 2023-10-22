@@ -26,6 +26,15 @@ export const getAllTerrains = async (req,res) => {
         data : elems
     })
 }
+export const getAllTerrainsCount = async (req,res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    const elems = await db('terrains').select('*')
+    
+    res.status(200).send({
+        success : true,
+        length : elems.length
+    })
+}
 
 export const getTerrain = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
