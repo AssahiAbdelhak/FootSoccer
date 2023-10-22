@@ -4,9 +4,7 @@ import dotenv from 'dotenv'
 import { db } from "../dataBase/db.js"
 import { signUpSchema } from "../requestValidation/signUpSchema.js"
 
-dotenv.config()
-
-console.log(process.env.SECRET)
+dotenv.config('../../.env')
 
 export const signIn = async (req,res) => {
     console.log('sign in function called')
@@ -23,7 +21,7 @@ export const signIn = async (req,res) => {
         }
         console.log(mot_de_passe,id_utilisateur)
         if(await argon2.verify(mot_de_passe,value.password)){
-            let token = jwt.sign({id : id_utilisateur},'secretsecret',{expiresIn : 10*60})
+            let token = jwt.sign({id : id_utilisateur},process.env.SECRET,{expiresIn : 10*60})
             console.log('200',token)
             res.status(200).send({
                 status : true,

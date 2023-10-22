@@ -34,6 +34,16 @@ import {useUserStore} from '../stores/user.js'
 
 let userResa = ref([])
 
+try{
+(await axios.create({
+    headers: {
+        Authorization : `Bearer ${localStorage.getItem('token')}`
+    }
+    }).get('http://localhost:8080/decode_jwt')).data.decoded.id
+}catch(e){
+    location.href = 'http://localhost:5173/sign-in'
+}
+
 const userStore = useUserStore()
 console.log(userStore.user)
 const date_nais = dayjs(userStore.user.date_naiss).format('YYYY/MM/DD')

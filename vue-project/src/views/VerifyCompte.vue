@@ -12,6 +12,13 @@ import axios, { Axios } from "axios"
 import { useRoute } from "vue-router"
 const props = defineProps(['id'])
 
+try{
+  (await axios.get('http://localhost:8080/user/'+props.id)).data
+}catch(e){
+  location.href = 'http://localhost:5173/sign-in'
+}
+  
+
 const verifyAccount = async () => {
     console.log(props.id)
     const res = await axios.post('http://localhost:8080/users/verifyCompte/'+props.id)

@@ -5,24 +5,19 @@ import dotenv from "dotenv";
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 
-dotenv.config({ path: './.env' })
+dotenv.config({ path: '../.env' })
+console.log(process.env.CLIENT)
 export default {
 
   development: {
-    client: 'postgresql',
+    client: process.env.CLIENT,
     connection: {
-      database: 'site_foot',
-      user:     'postgres',
-      password: 'admin'
+      database: process.env.DATABASE_NAME,
+      user: process.env.USER_NAME,
+      password: process.env.PASSWORD
     },
     migrations: {
       tableName: 'knex_migrations'
     }
-  },
-  onUpdateTable : table => `
-    CREATE TRIGGER ${table}_updated_at
-    BEFORE UPDATE ON ${table}
-    FOR EACH ROW
-    EXECUTE PROCEDURE on_update_timestamp();
-  `
+  }
 };

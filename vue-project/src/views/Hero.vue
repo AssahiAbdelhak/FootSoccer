@@ -62,8 +62,6 @@ if(token != null){
         userStore.setUser((await reqInstance.get('http://localhost:8080/users/'+user_id)).data.data[0])
         console.log(userStore.user)
         //location.href = 'http://localhost:5173/'
-    }else{
-        location.href = 'http://localhost:5173/sign-in'
     }
     
 }

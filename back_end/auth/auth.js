@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 
-dotenv.config()
+dotenv.config({path : '../../.env'})
 
 function verifyToken(token){
     if(token == null)
@@ -20,7 +20,6 @@ export function decodejwt(req,res) {
         return false;
     jwt.verify(token, process.env.SECRET, function (err, decoded) {
         if (err){
-            console.log('here')
             console.log(err)
             return res.send({
                 "success" : false,

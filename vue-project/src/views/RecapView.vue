@@ -29,13 +29,16 @@ let h = heure.split('=')[1].substring(0,2)
 let d = dayjs(date.split('=')[1]).format('dd DD/MM')
 let id_c = (await axios.get('http://localhost:8080/terrains/'+id)).data.data[0].id_terrain
 let centre = (await axios.get('http://localhost:8080/centres/'+id_c)).data.data[0].nom_centre
-let id_user = (await axios.create({
-        headers: {
-            Authorization : `Bearer ${localStorage.getItem('token')}`
-            }
+let id_user
+try{
+id_user = (await axios.create({
+    headers: {
+        Authorization : `Bearer ${localStorage.getItem('token')}`
+    }
     }).get('http://localhost:8080/decode_jwt')).data.decoded.id
-  console.log(id_user)
-console.log(id)
+}catch(e){
+    location.href = 'http://localhost:5173/sign-in'
+}
 const reserve = async () => {
   const res = await axios.post('http://localhost:8080/reservation/terrain?id_terrain='+id+'&date='+date.split('=')[1]+'&debut='+heure.split('=')[1]+'&duree=1')
   console.log(res.data)

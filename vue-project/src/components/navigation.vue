@@ -10,7 +10,6 @@
   </div>
   <div class="w-full  flex-grow lg:flex lg:items-center lg:w-auto " :class="menuIsClosed ? 'hidden' : 'block'">
     <div class="text-sm lg:flex-grow">
-      <h1 class="text-white">{{userStore.user}}</h1>
       <span  href="#responsive-header" v-for="lien in liens" :key="lien" class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
         <router-link v-if="userStore.user" :to="lien.lien" >{{lien.titre}}</router-link>
       </span>
@@ -29,7 +28,7 @@ import {onUpdated, ref, watch} from 'vue'
 import {useUserStore} from '../stores/user.js'
 const menuIsClosed = ref(true)
 const menu = ref(null)
-const liens = [{titre : 'Réserver', lien: '/reserve'},{titre : 'Mon Compte', lien : '/mon_compte'}]
+const liens = [{titre : 'Mon Compte', lien : '/mon_compte'}]
 
 const userStore = useUserStore()
 console.log(userStore.title)

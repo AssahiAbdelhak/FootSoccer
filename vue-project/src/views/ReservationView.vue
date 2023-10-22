@@ -68,6 +68,16 @@
     import axios from 'axios'
     import ReservationList from '../components/reservationList.vue'
 
+    try{
+        (await axios.create({
+            headers: {
+                Authorization : `Bearer ${localStorage.getItem('token')}`
+            }
+        }).get('http://localhost:8080/decode_jwt')).data.decoded.id
+    }catch(e){
+        location.href = 'http://localhost:5173/sign-in'
+    }
+
     const type = ref(null)
     const startFrom = ref(null)
 

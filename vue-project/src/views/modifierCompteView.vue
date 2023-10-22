@@ -10,10 +10,10 @@
             <input v-model="object.email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="mail" type="email" placeholder="Adresse e-mail">
             </div>
             <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="mail">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="num">
                 numero de tel
             </label>
-            <input v-model="object.num_tel" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="mail" type="tel" placeholder="Adresse e-mail">
+            <input v-model="object.num_tel" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="num" type="tel" placeholder="Adresse e-mail">
             </div>
             <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
@@ -41,6 +41,16 @@ import axios from "axios"
 import { ref } from "vue"
 import {useUserStore} from '../stores/user.js'
 
+try{
+(await axios.create({
+    headers: {
+        Authorization : `Bearer ${localStorage.getItem('token')}`
+    }
+    }).get('http://localhost:8080/decode_jwt')).data.decoded.id
+}catch(e){
+    location.href = 'http://localhost:5173/sign-in'
+}
+
 const userStore = useUserStore()
 console.log(userStore.user)
 const object = ref({
@@ -50,12 +60,16 @@ const object = ref({
 })
 
 const modifierInfos = async () => {
+try{
 const res = await axios.create({
         headers: {
             Authorization : `Bearer ${localStorage.getItem('token')}`
             }
     }).patch('http://localhost:8080/users/'+userStore.user.id_utilisateur,object.value)
-console.log(res.data)
+    console.log(res.data)
+}catch(e){
+    location.href = 'http://localhost:5173/sign-in'
+}
 }
 
 </script>
