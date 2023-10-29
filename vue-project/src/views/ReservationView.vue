@@ -81,8 +81,8 @@ let [id_centre,date] = location.href.split('?')[1].split('&')
     const date_param = ref(date)
     
     watch(date_param,() => console.log('date changed'))
-    
-    let allTerrains = await computed((await axios.get('http://localhost:8080/terrains?'+id_centre)).data.data) 
+    // regroupe all the logic in function and call it with the changing of date_param
+    let allTerrains = computed((await axios.get('http://localhost:8080/terrains?'+id_centre)).data.data) 
     let response = computed((await axios.get('http://localhost:8080/terrains?'+id_centre+'&'+date_param.value)).data.data)
     const start = dayjs('2023-10-13 15:00:00')
     const duration = 3
