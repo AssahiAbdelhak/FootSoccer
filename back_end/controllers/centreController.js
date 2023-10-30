@@ -3,6 +3,7 @@ import { db } from "../dataBase/db.js"
 import { addCentreSchema } from "../requestValidation/centreSchema.js"
 
 export const getAllCentres = async (req,res) => {
+    res.header("Access-Control-Allow-Origin", "*");
     let elems = await db('centres').select('*');
     console.log(elems.length)
     res.status(200).send({
@@ -12,7 +13,9 @@ export const getAllCentres = async (req,res) => {
     })
 }
 
+
 export const getCentre = async (req,res) => {
+    res.header("Access-Control-Allow-Origin", "*");
     let elem = await db('centres').select('*').where('id_centre','=',req.params.id);
     res.status(200).send({
         success : true,

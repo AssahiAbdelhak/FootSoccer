@@ -33,6 +33,7 @@ export const up = async function(knex) {
         
         await knex.schema.createTable('utilisateurs',function(table) {
             table.increments('id_utilisateur').primary();
+            table.boolean('isVerified').defaultTo(false);
             table.string('nom_complet').notNullable();
             table.string('niveau').checkIn(['debutant','intermidiaire','confirme']).notNullable();
             table.integer('matchs_joues').defaultTo(0);
@@ -45,16 +46,17 @@ export const up = async function(knex) {
             table.timestamps(true,true);
         });
         await knex.schema.createTable('resa_terrain',(table) => {
+            table.increments('id_resa');
             table.integer('id_terrain').references('terrains.id_terrain');
             table.date('date').notNullable();
-            table.time('debut');
+            table.integer('debut').checkBetween([0,23]);
             table.integer('duree').notNullable();
             table.primary(['id_terrain','date','debut'])
             table.timestamps(true,true);
         });
         await knex.schema.createTable('resa_utilisateurs',(table) => {
+            table.integer('id_resa');
             table.integer('id_utilisateur').references('utilisateurs.id_utilisateur');
-            table.integer('id_terrain').references('terrains.id_terrain');
             table.timestamps(true,true);
         });
         return Promise.resolve();

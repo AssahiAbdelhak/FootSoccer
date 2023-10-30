@@ -4,9 +4,9 @@
         <div class="flex flex-col justify-center gap-16 items-center h-full ">
             <div class="flex flex-col gap-1 w-full justify-center items-center text-center text-3xl font-bold  tracking-widest leading-loose uppercase">
                 <span class="block">FOOTSOCCER</span> 
-                <span>c'est 15 centres <i class="fa-solid inline-block fa-warehouse"></i></span> 
-                <span>100 terrains <i class="fa-solid fa-futbol"></i></span>
-                <span>et 1000 utilisateurs <i class="fa-solid fa-person"></i></span>
+                <span>c'est {{ count_centres }} centres <i class="fa-solid inline-block fa-warehouse"></i></span> 
+                <span>{{ count_terrins }} terrains <i class="fa-solid fa-futbol"></i></span>
+                <span>et {{ count_users }} utilisateurs <i class="fa-solid fa-person"></i></span>
                 <span>dans toute la france</span>
             </div>
             <form action="/reserve" class="w-3/4">
@@ -15,10 +15,8 @@
                         <i class="fa-solid fa-2xl fa-warehouse"></i>
                         <div class="div">
                             <h3>CENTRE</h3>
-                            <select name="centre" id="id_cente">
-                            <option value="1">Parilly</option>
-                            <option value="5">Lyon</option>
-                            <option value="7">Le Mans</option>
+                            <select name="id_centre" id="id_centre">
+                            <option v-for="centre in centres" :key="centre" :value="centre.id_centre">{{centre.nom_centre}}</option>
                             </select>
                         </div>
                     </div>
@@ -26,7 +24,7 @@
                         <i class="fa-solid fa-calendar-days fa-2xl"></i>
                         <div class="div">
                             <h3>DATE</h3>
-                            <input type="date" name="date" id="date"  value="2023-10-12">
+                            <input type="date" name="date" id="date"  :value="date_ajd">
                         </div>
                     </div>
                     <button type="submit" style="height: 70px;" class="flex bg-black text-white justify-center items-center w-full h-full md:w-1/5">
@@ -39,10 +37,40 @@
   </div>
 </template>
 
-<script>
-export default {
+<script setup>
+import axios from "axios"
+import dayjs from "dayjs"
+import { ref } from "vue"
+import {useUserStore} from '../stores/user.js'
 
+const userStore = useUserStore()
+const res_centres = (await axios.get('http://localhost:8080/centres')).data
+const count_terrins = (await axios.get('http://localhost:8080/terrains/count')).data.length
+const count_users = (await axios.get('http://localhost:8080/users/count')).data.length
+const count_centres = res_centres.length
+
+const centres = res_centres.data
+const date_ajd = dayjs().format('YYYY-MM-DD')
+
+const token = localStorage.getItem('token')
+
+if(token != null){
+    let reqInstance = axios.create({
+        headers: {
+            Authorization : `Bearer ${token}`
+            }
+    })
+    const token_verif = (await reqInstance.get('http://localhost:8080/decode_jwt')).data
+    console.log(token_verif)
+    if(token_verif.success){
+        let user_id = token_verif.decoded.id
+        userStore.setUser((await reqInstance.get('http://localhost:8080/users/'+user_id)).data.data[0])
+        console.log(userStore.user)
+        //location.href = 'http://localhost:5173/'
+    }
+    
 }
+
 </script>
 
 <style>
