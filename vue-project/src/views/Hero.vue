@@ -24,7 +24,7 @@
                         <i class="fa-solid fa-calendar-days fa-2xl"></i>
                         <div class="div">
                             <h3>DATE</h3>
-                            <input type="date" name="date" id="date"  :value="date_ajd">
+                            <input type="date" :min="date_ajd" name="date" id="date"  :value="date_ajd">
                         </div>
                     </div>
                     <button type="submit" style="height: 70px;" class="flex bg-black text-white justify-center items-center w-full h-full md:w-1/5">

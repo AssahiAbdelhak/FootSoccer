@@ -7,6 +7,7 @@ import { addUserTodb, deleteUserTodb, getAllUsers, getAllUsersCount, getUser, up
 import { signIn } from './controllers/authController.js';
 import {authenticate, authenticateAsUser,decodejwt} from './auth/auth.js';
 import { addJoueursReserves, addTerrainsReserves, getAllJoueursReserves, getAllTerrainsReserves } from './controllers/reservationController.js';
+import { sendSMS, sendWhatsappMessage } from './utils/fonctions.js';
 
 
 
@@ -71,6 +72,9 @@ app.post('/reservation/terrain', addTerrainsReserves)
 app.get('/reservation/joueur/:id', getAllJoueursReserves)
 app.post('/reservation/joueur', addJoueursReserves)
 
+/** route pour l'envoi des sms */
+app.post("/send/sms",sendSMS)
+app.post("/send/whatsapp",sendWhatsappMessage)
 
 app.listen({port: 8080},(err) => {
     if(err) throw err

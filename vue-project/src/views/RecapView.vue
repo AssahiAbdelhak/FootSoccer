@@ -9,10 +9,10 @@
     </button>
     <div class="flex items-center">
         <h2>invite tes amis par : </h2>
-        <button class="bg-blue-500 mt-3 ml-10 mr-10 mb-3 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <button @click="sendSMS" class="bg-blue-500 mt-3 ml-10 mr-10 mb-3 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             SMS
         </button>
-        <button class="bg-blue-500 mt-3 mb-3 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        <button @click="sendWhatsappMessage" class="bg-blue-500 mt-3 mb-3 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Whatsapp
         </button>
     </div>
@@ -43,6 +43,21 @@ const reserve = async () => {
   const res = await axios.post('http://localhost:8080/reservation/terrain?id_terrain='+id+'&date='+date.split('=')[1]+'&debut='+heure.split('=')[1]+'&duree=1')
   console.log(res.data)
   await axios.post('http://localhost:8080/reservation/joueur?id_resa='+res.data.id_resa+'&id_utilisateur='+id_user)
+}
+
+const sendSMS = async () => {
+    const number = prompt('saisir numero de telephone : ')
+    await axios.post('http://localhost:8080/send/sms',{
+        destinataire : '+33'+number.substring(1,11),
+        message : `votre ami vous invite au matche prévu le ${d} ${h}h à ${centre}`
+    })
+}
+const sendWhatsappMessage = async () => {
+    const number = prompt('saisir numero de telephone : ')
+    await axios.post('http://localhost:8080/send/whatsapp',{
+        destinataire : '+33'+number.substring(1,11),
+        message : `votre ami vous invite au matche prévu le ${d} ${h}h à ${centre}`
+    })
 }
 
 </script>
