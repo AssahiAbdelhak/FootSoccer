@@ -3,12 +3,11 @@ import fastifyCors from '@fastify/cors';
 import { fastifyExpress } from '@fastify/express';
 import { addCentreTodb, deleteCentreTodb, getAllCentres, getCentre, updateCentreTodb } from './controllers/centreController.js';
 import { addTerrainTodb, deleteTerrainTodb, getAllTerrains, getAllTerrainsCount, getTerrain, updateTerrainTodb } from './controllers/terrainController.js';
-import { addUserTodb, deleteUserTodb, getAllUsers, getAllUsersCount, getUser, updatePassword, updateUserTodb, userExiste, verifyUser } from './controllers/userController.js';
+import { addUserTodb, deleteUserTodb, getAllUsers, getAllUsersCount, getUser, updatePassword, updateUserInformation, updateUserTodb, userExiste, verifyUser } from './controllers/userController.js';
 import { signIn } from './controllers/authController.js';
 import {authenticate, authenticateAsUser,decodejwt} from './auth/auth.js';
-import { addJoueursReserves, addTerrainsReserves, getAllJoueursReserves, getAllTerrainsReserves } from './controllers/reservationController.js';
+import { addJoueursReserves, addTerrainsReserves, getAllJoueursReserves, getAllTerrainsReserves, getReservationInfos } from './controllers/reservationController.js';
 import { sendSMS, sendWhatsappMessage } from './utils/fonctions.js';
-
 
 
 export const app = Fastify();
@@ -17,7 +16,6 @@ await app.register(fastifyCors,{
     origin :'*'
 })
 app.use(function (req, res, next) {
-    console.log('run middleware')
     // Website you wish to allow to connect
     res.header('Access-Control-Allow-Origin', '*');
 
@@ -57,14 +55,17 @@ app.get('/users/count',getAllUsersCount)
 app.get('/user/:id',userExiste)
 app.get('/users/:id',{preHandler : authenticate},getUser)
 app.patch('/users/:id', { preHandler: authenticate },updateUserTodb)
+//app.patch('/users/:id', { preHandler: authenticate },updateUserInformation)
 app.delete('/users/:id',{preHandler : authenticateAsUser},deleteUserTodb)
 app.post('/users',addUserTodb) 
 app.post('/users/verifyCompte/:id',verifyUser) 
 
 /** route pour l'authentification */
-app.post('/sign-up',signIn)
+app.post('/login',signIn)
 app.post('/secure/updatePassword/:id',updatePassword)
 app.get('/decode_jwt', decodejwt)
+
+app.get('/reservation/:id', getReservationInfos)
 
 /**route pour les tables de la reservation */
 app.get('/reservation/terrain/:id', getAllTerrainsReserves)

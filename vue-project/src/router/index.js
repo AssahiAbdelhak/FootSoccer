@@ -3,12 +3,13 @@ import Home from '../views/Home.vue'
 import SignIn from '../views/SignIn.vue'
 import CreateAccount from '../views/CreateAccount.vue'
 import ReservationView from '../views/ReservationView.vue'
-import RecapView from '../views/RecapView.vue'
+import Logout from '../views/Logout.vue'
 import MonCompte from '../views/MonCompte.vue'
 import modifierCompteView from '../views/modifierCompteView.vue'
 import VerifyCompte from '../views/VerifyCompte.vue'
+import ForgotPassword from '../views/ForgotPassword.vue'
 import ResetPassword from '../views/ResetPassword.vue'
-import SetNewPassword from '../views/SetNewPassword.vue'
+import Centres from '../views/Centres.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,38 +20,44 @@ const router = createRouter({
       component : Home
     },
     {
-      path: '/sign-in',
+      path: '/centres',
+      name: 'Centres',
+      component : Centres
+    },
+    {
+      path: '/login',
       name: 'signIn',
       component : SignIn
     },
     {
-      path: '/resetPassword',
-      name: 'resetPassword',
-      component : ResetPassword
-    },
-    {
-      path: '/setNewPassword/:id',
-      name: 'setNewPassword',
-      component : SetNewPassword,
-      props : true
-    },
-    {
-      path: '/user/create',
+      path: '/register',
       name: 'createAccount',
       component : CreateAccount
     },
     {
-      path: '/reserve',
-      name: 'reservation',
-      component : ReservationView,  
+      path: '/logout',
+      name: 'logout',
+      component : Logout,
     },
     {
-      path: '/reserve/recap',
-      name: 'recap',
-      component: RecapView,
-      props: true
-    },{
-      path: '/mon_compte',
+      path: '/forgotPassword',
+      name: 'forgotPassword',
+      component : ForgotPassword
+    },
+    {
+      path: '/resetpassword/:id',
+      name: 'resetpassword',
+      component : ResetPassword,
+      props : true
+    },
+    {
+      path: '/reservation/:centre',
+      name: 'reservation',
+      component : ReservationView,  
+      props : true
+    },
+     {
+      path: '/myAccount',
       name: 'monCompte',
       component: MonCompte,
     },{

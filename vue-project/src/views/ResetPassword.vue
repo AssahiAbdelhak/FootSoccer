@@ -1,31 +1,33 @@
 <template>
-  <div class="h-screen flex justify-center items-center">
-    <div class="mb-4 max-w-lg h-fit" style="width : 500px;">
-        <label class="block text-gray-700 text-sm font-boldm-auto " for="mail">
-                adresse e-mail
-        </label>
-        <input v-model="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="mail" type="email" placeholder="Adresse e-mail">
-        <input @click="sendLink" value="Envoyer le lien" type="submit" class="bg-blue-500 mt-4 w-full mb-5 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" />
-    </div>
+  <div class="text-white flex flex-col items-center justify-center h-screen">
+    <h1 class="text-center mb-28 text-5xl">Réinitialisez votre mot de passe</h1>
+    <Input type="password" v-model="password" title="Saisir votre nouveau mot de passe"/>
+    <Input type="password" v-model="confirmPassword" title="confirme le nouveau mot de passe"/>
+    <Error v-if="error" :message="error" />
+    <button class="btn" @click="updatePassword">envoyer le lien</button>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import Input from '../components/Input.vue'
+import Error from '../components/Error.vue'
 
-const email = ref('')
-
-const sendLink = async () => {
-  /**TODO */
-  // envoyer le bon mail
-  const allusers = (await axios.get('http://localhost:8080/users')).data.data
-  const user = allusers.filter((a) => a.email == email.value)
-  if(user.length != 0){
-    console.log(user)
-    console.log('http://localhost:5173/setNewPassword/'+user[0].id_utilisateur)
+const error = ref(null)
+const props = defineProps(['id'])
+const password = ref('')
+const confirmPassword = ref('')
+//  
+const updatePassword = async () => {
+  error.value = null
+  if(password.value !== confirmPassword.value){
+    error.value = 'les deux mots de passe ne sont pas identiques'
+    return
   }
-  
+  await axios.post('http://localhost:8080/secure/updatePassword/'+props.id,{
+    mot_de_passe : password.value
+  })
 }
 
 </script>

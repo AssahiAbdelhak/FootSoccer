@@ -14,7 +14,7 @@ export default {
       database: process.env.DATABASENAME,
       user: process.env.USERNAME,
       password: process.env.PASSWORD
-    },
+    }, 
     migrations: {
       tableName: 'knex_migrations'
     }

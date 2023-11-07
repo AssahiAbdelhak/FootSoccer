@@ -15,31 +15,23 @@ const ON_UPDATE_TIMESTAMP_FUNCTION = `
 $$ language 'plpgsql';
 `
 export const up = async function(knex) {
-
+    console.log(knex.fn.now(6))
         await knex.schema.createTable('centres',function(table) {
             table.increments('id_centre').primary();
             table.string('nom_centre').notNullable().unique();
+            table.string('adr_centre').notNullable();
+            table.integer('nb_terrains').default(1);
+            table.float('tarif',3,1).notNullable();
             table.timestamps(true,true);
         });
-        await knex.schema.createTable('terrains',function(table) {
-            table.increments('id_terrain').primary();
-            table.integer('id_centre');
-            table.foreign('id_centre').references('centres.id_centre');
-            table.boolean('est_filme').notNullable();
-            table.float('tarif',3,1).notNullable();
-            table.string('localisation').checkIn(['interieur','exterieur']);
-            table.timestamps(true,true);
-        })
+        
         
         await knex.schema.createTable('utilisateurs',function(table) {
             table.increments('id_utilisateur').primary();
             table.boolean('isVerified').defaultTo(false);
             table.string('nom_complet').notNullable();
-            table.string('niveau').checkIn(['debutant','intermidiaire','confirme']).notNullable();
-            table.integer('matchs_joues').defaultTo(0);
+            table.string('niveau').checkIn(['débutant','intermidiaire','confirmé']).notNullable();
             table.date('date_naiss').notNullable();
-            table.integer('total_notes').defaultTo(0);
-            table.integer('nb_notes').defaultTo(0);
             table.string('num_tel').unique();
             table.string('email').unique().notNullable();
             table.string('mot_de_passe').notNullable();
@@ -47,11 +39,10 @@ export const up = async function(knex) {
         });
         await knex.schema.createTable('resa_terrain',(table) => {
             table.increments('id_resa');
-            table.integer('id_terrain').references('terrains.id_terrain');
+            table.integer('id_centre').references('centres.id_centre');
             table.date('date').notNullable();
             table.integer('debut').checkBetween([0,23]);
-            table.integer('duree').notNullable();
-            table.primary(['id_terrain','date','debut'])
+            table.primary(['id_centre','date','debut'])
             table.timestamps(true,true);
         });
         await knex.schema.createTable('resa_utilisateurs',(table) => {
@@ -72,7 +63,6 @@ export const down = function(knex) {
         knex.schema.dropTableIfExists('resa_utilisateurs'),
         knex.schema.dropTableIfExists('resa_terrain'),
         knex.schema.dropTableIfExists('utilisateurs'),
-        knex.schema.dropTableIfExists('terrains'),
         knex.schema.dropTableIfExists('centres'),
     ]);
 

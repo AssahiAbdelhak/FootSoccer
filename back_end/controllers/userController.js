@@ -6,7 +6,8 @@ import { userUpdateSchema } from '../requestValidation/userUpdateSchema.js';
 
 export const getAllUsers = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
-    let elems = await db('utilisateurs').select('*');
+    console.log(req.query.email)
+    let elems = await db('utilisateurs').where("email",'=',req.query.email).select(...req.query.filter.split(','));
     res.status(200).send({
         success : true,
         length : elems.length,
@@ -138,7 +139,7 @@ export const deleteUserTodb = async (req,res) => {
 
 export const updateUserTodb = async (req,res) => {
     console.log('hello from update function')
-    let elem = await db('utilisateurs').select('num_tel','email','mot_de_passe').where('id_utilisateur','=',req.params.id);
+    let elem = await db('utilisateurs').select('email','num_tel','nom_complet','date_naiss','niveau').where('id_utilisateur','=',req.params.id);
     let newObject = {
         ...elem[0],
         ...req.body
@@ -149,22 +150,16 @@ export const updateUserTodb = async (req,res) => {
         console.log('no errors')
         try{
             
-            if (req.body.mot_de_passe != '') {
-                value = {
-                    ...value,
-                    mot_de_passe: await hash(req.body.mot_de_passe,'secretsecret') 
-                }
-            }else{
-                delete value.mot_de_passe
-            }
             console.log(value)
             console.log('update user')
-            await db("utilisateurs")
+            const user = (await db("utilisateurs")
             .where('id_utilisateur','=',req.params.id)
-            .update(value)
+            .update(value).returning('*'))[0]
+            console.log('new user ',user)
             res.status(201).send({
                 success : true,
-                message : 'l\'element est modifié'
+                message : 'l\'element est modifié',
+                user 
             })
         }catch(err){
             console.log(err)
@@ -181,4 +176,45 @@ export const updateUserTodb = async (req,res) => {
                 message : 'donnees invalides'
             })
     }
+}
+
+/**
+ * 
+ * formulaires de connexion centrer 
+ * foot soccer nest pas present logo au dessus
+ * ajouter creer compte comme un lien
+ * button de connextion trop grand
+ * navigation doit eetre presente oartout 
+ * lister les centres ajouter un lien dans la navigation 
+ */
+
+export const updateUserInformation = async (req, res) => {
+    const userId = req.params.id;
+    const user = db('utilisateurs').select('*').where('id_utilisateur', '=', userId).first();
+    const email = req.body.email ? req.body.email : user.email;
+    const num_tel = req.body.num_tel ? req.body.num_tel : user.num_tel;
+    const mot_de_passe = req.body.mot_de_passe ? req.body.mot_de_passe : user.mot_de_passe;
+    const newUser = {
+        ...user,
+        email,
+        num_tel,
+        mot_de_passe
+    };
+
+    const updatedUserInformation = await db("utilisateurs")
+    .where('id_utilisateur','=',req.params.id)
+    .update(newUser, [ 
+        'id_utilisateur',
+        'isVerified',
+        'nom_complet',
+        'niveau'     ,
+        'matchs_joues' ,
+        'date_naiss' ,
+        'num_tel'    ,
+        'email'
+    ]);
+    console.log("🚀 ~ file: userController.js:202 ~ updateUserInformation ~ updatedUserInformation:", updatedUserInformation)
+    res.status(200).send({
+        users : updatedUserInformation
+    });
 }

@@ -15,7 +15,7 @@ export const signIn = async (req,res) => {
     if(!error && value.password != null){
         console.log("hello")
         //let {mot_de_passe,id_utilisateur,isVerified} = (await db('utilisateurs').select('mot_de_passe','id_utilisateur','isVerified').where('email',"=",value.email))[0];
-        let elem = (await db('utilisateurs').select('mot_de_passe','id_utilisateur','isVerified').where('email',"=",value.email))[0];
+        let elem = await db('utilisateurs').select('*').where('email',"=",value.email).first();
         
         console.log(elem)
         console.log('here')
@@ -36,11 +36,13 @@ export const signIn = async (req,res) => {
         }
         console.log(mot_de_passe,id_utilisateur)
         if(await argon2.verify(mot_de_passe,value.password)){
-            let token = jwt.sign({id : id_utilisateur},process.env.SECRET,{expiresIn : 10*60})
+            let token = jwt.sign({id : id_utilisateur},process.env.SECRET,{expiresIn : 1000*60*24})
             console.log('200',token)
+            console.log(elem)
             return res.status(200).send({
                 status : true,
-                token
+                token,
+                elem
             })
         }else{
             console.log('401')

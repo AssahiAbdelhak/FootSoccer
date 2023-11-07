@@ -15,6 +15,7 @@
         <button @click="sendWhatsappMessage" class="bg-blue-500 mt-3 mb-3 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Whatsapp
         </button>
+        <a href="https://api.whatsapp.com/send?phone=33605855334&text=Hi">Send Message</a>
     </div>
   </div>
 </template>

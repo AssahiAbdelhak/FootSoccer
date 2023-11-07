@@ -9,5 +9,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
-
+*{
+    font-family: 'Poppins', sans-serif;;
+}
 </style>

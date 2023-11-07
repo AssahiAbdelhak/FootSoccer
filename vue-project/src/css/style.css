@@ -2,9 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+.input{
+    @apply bg-transparent border-2 py-2.5 px-5 outline-none
+}
+.sm-nav-links{
+    @apply  w-screen bg-black left-0 flex flex-col items-start gap-3 mt-10 justify-start
+}
+.lg-nav-links{
+    @apply lg:w-fit lg:flex lg:relative lg:flex-row lg:flex-grow lg:h-fit lg:mt-0 lg:justify-between lg:items-center
+}
 
 .btn{
-    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
+    @apply font-light uppercase text-3xl bg-red-500 w-fit px-8 py-3 rounded-lg
 }
 
 .hide-nav{

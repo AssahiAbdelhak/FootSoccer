@@ -1,74 +1,118 @@
 <template>
-    <div class="p-4 h-screen ">
-        <div>
-            <div class="list-date flex items-center justify-between px-4 my-5">
-                <span class="fleche cursor-pointer font-bold text-2xl">&lt;</span>
-                <span class="date cursor-pointer text-2xl" @click="() => date_param = date">{{today}}</span>
-                
-                <span class="date text-gray-500 cursor-pointer text-2xl" v-for="day in days" :key="day" @click="() => date_param = day[1]" >
-                    {{day[0]}}
-                    </span>
-                <span class="fleche cursor-pointer font-bold text-2xl">&gt;</span>
-            </div>
-            <div class="flex justify-end">
-                <button  @click="() => optionsTabIsClosed = false" class="bg-blue-500 mt-7 mb-5 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                            PLUS D'OPTIONS
-                </button>
-            </div>
-            <div>
-                <div >
-                    <ReservationList :dispo="foot.dispo" :day="date_param" :heure="foot.heure" v-for="foot in available" :key="foot" />
+    <div class="text-white bg-black h-screen">
+        <Navigation />
+        <div class="px-20 ">
+            <h1 class="uppercase text-4xl font-normal text-center my-20">reservez votre terrain de football en quelques étapes faciles</h1>
+            <div class="flex gap-10">
+                <div class="w-2/3">
+                    <h1 class="border-b-2 py-6">Sélectionnnez {{centre_prop == 'null' ? 'un centre, ' : ''}}une date et une heure</h1>
+                    
+                    <div class="flex justify-between gap-6 items-center">
+                        <div class="flex flex-col w-2/5">
+                            <p class="text-2xl font-light capitalize mb-3">Centres *</p>
+                            <select class="input mb-8 w-full px-5 py-2.5" v-model="centre_id">
+                                <option class="bg-black"  v-for="centre in centres" :key="centre.id_centre" :value="centre.id_centre">{{centre.nom_centre}}</option>
+                            </select>
+                            <VueDatePicker :min-date="new Date()" :disabled="centre ? false : true" v-model="day" :enable-time-picker="false" ></VueDatePicker>
+                        </div>
+                        
+                        <div class="w-3/5" >
+                            <h2 class="my-5">{{day ? dayjs(day).format('dddd D MMMM') : ''}}</h2>
+                            <div class="flex flex-wrap justify-between gap-3">
+
+                                <h3 class="w-44 h-12 cursor-pointer flex justify-center items-center border-2" @click="() => hour = av" v-for="av in availablehours" :key="av">{{av}}:00</h3>
+                                
+                            </div>
+                        </div>
+                    </div>
                     
                 </div>
-                
+                <div class="flex flex-col justify-between gap-8 flex-grow">
+                    <h1 class="border-b-2 py-6">Détails du service</h1>
+                    <div class="flex flex-col gap-4">
+                        <h2>match 5vs 5</h2>
+                        <h2>{{day ? dayjs(day).format('D MMMM YYYY') : ''}} {{hour ? `à ${hour}:00` : ''}}</h2>
+                        <h2>{{centre ? centre.adr_centre.split(' ').slice(0,centre.adr_centre.split(' ').length - 3).join(' ') : ''}} <br />{{centre ? centre.adr_centre.split(' ').slice(centre.adr_centre.split(' ').length - 3).join(' ') : ''}}</h2>
+                    </div>
+                    <h1>Détails du paiement</h1>
+                    <div class="flex justify-between">
+                        <h1>Total</h1>
+                        <h1>{{centre ? centre.tarif+'$' : ''}}</h1>
+                    </div>
+                    <router-link to="#" @click="reserver" class="btn text-center" style="width:100%;" >réserver</router-link>
+                </div>
             </div>
         </div>
-        <div v-if="!optionsTabIsClosed" class=" w-2/3 h-2/3 border z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white">
-            <form class="h-full">
-                <div class="border-b-2 text-center py-3 relative">
-                    <h1 class="">VOS OPTIONS</h1>
-                    <i class="fa-solid fa-xmark absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer" @click="() => optionsTabIsClosed = true"></i>
-                </div>
-                
-                <div style="height : 550px;" class="px-8">
-                <div class="py-4 flex flex-col gap-3 h-full justify-around">
-                    <h2>TYPE TERRAIN : </h2>
-                    <div class="flex justify-around items-center">
-                        <div @click="() => type='interieur'" >
-                            <input type="radio" name="type" id="type-1">
-                            <label class="ml-2 mr-6" for="type-1">INTERIEUR</label>
-                        </div>
-                        <div @click="() => type='exterieur'">
-                            <input type="radio" name="type" id="type-2">
-                            <label for="type-2"  class="ml-2">EXTERIEUR</label>
-                        </div>
-                    </div>
-                    <h2>HORRAIRE A PARTIR DE : </h2>
-                    <div class="flex justify-center items-center gap-2">
-                        <span class="fleche cursor-pointer font-bold text-2xl">&lt;</span>
-                        <h3  class="border w-11 h-11 p-2 flex items-center justify-center cursor-pointer rounded bg-gray-100"><i class="fa-solid fa-ban"></i></h3>
-                        <h3 @click="() => startFrom=15" class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">15H</h3>
-                        <h3 @click="() => startFrom=16" class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">16H</h3>
-                        <h3 @click="() => startFrom=17" class="border w-11 p-2 flex items-center justify-center cursor-pointer rounded hover:bg-gray-100">17H</h3>
-                        <span class="fleche cursor-pointer font-bold text-2xl">&gt;</span>
-                    </div>
-                    <button @click="appliquerFilter" class="bg-blue-500 mt-7 mb-5 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                            APPLIQUER
-                    </button>
-                </div>
-                </div>
-            </form>
-        </div>
+        <Footer />
     </div>
 </template>
 
 <script setup>
-    import { computed, onMounted, onUpdated, ref, watch, watchEffect,  } from 'vue'
-    import dayjs from 'dayjs'
-    import axios from 'axios'
-    import ReservationList from '../components/reservationList.vue'
+import Navigation from '../components/navigation.vue'
+import Footer from '../components/Footer.vue'
+import Input from '../components/Input.vue'
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import dayjs from 'dayjs'
+import 'dayjs/locale/fr'
+import axios from 'axios'
+import { reactive, ref, watch } from 'vue';
+import {useUserStore} from '../stores/user.js'
 
-    try{
+const userStore = useUserStore()
+
+dayjs.locale('fr')
+let indisponibilites,availablehours = ref([])
+const props = defineProps(['centre'])
+let centre_prop = props.centre.split('=')[1]
+console.log(typeof centre_prop)
+let centre_id = ref(centre_prop == 'null' ? '' : centre_prop)
+let day = ref('')
+let hour = ref('')
+let centre = ref(null)
+
+let centres = (await axios.get('http://localhost:8080/centres?filter=nom_centre,id_centre,tarif,adr_centre')).data.data
+centre.value = centres.filter((a) => a.id_centre == centre_id.value)[0]
+
+
+let generate = (x,y) => {
+    let arr =[]
+    for(let i =x ; i <= y ; i++)
+        arr.push(i)
+    return arr
+}
+watch(centre_id,async () => {
+    centre.value = centres.filter((a) => a.id_centre == centre_id.value)[0]
+})
+watch(day,async () => {
+    console.log('day updated...')
+    indisponibilites = (await axios.get('http://localhost:8080/reservation/terrain/'+centre_id.value+'?date='+dayjs(day.value).format('YYYY-MM-DD')+'&filter=debut')).data.data.map(
+        (a) => a['debut']);
+    let min = dayjs(day.value).format('YYYY-MM-DD') == dayjs().format('YYYY-MM-DD') ? Number(dayjs().format('HH'))+1 : 10
+    console.log(dayjs(day.value).format('YYYY-MM-DD') )
+    console.log(dayjs().format('YYYY-MM-DD'))
+    console.log(min)
+    availablehours.value = generate(min,20).filter((a) => indisponibilites.indexOf(a) == -1)
+})
+
+const reserver = async () => {
+    if(hour.value == '')
+        return 
+    console.log('pass')
+    const id_resa = (await axios.post('http://localhost:8080/reservation/terrain',{
+        id_centre : centre_id.value,
+        date : dayjs(day.value).format('YYYY-MM-DD'),
+        debut : hour.value
+    })).data.id_resa
+
+    const res = (await axios.post('http://localhost:8080/reservation/joueur',{
+        id_resa,
+        id_utilisateur : userStore.user.id_utilisateur,
+    })).data
+}
+
+
+    /*try{
         (await axios.create({
             headers: {
                 Authorization : `Bearer ${localStorage.getItem('token')}`
@@ -155,7 +199,7 @@
 
     watch(date_param,() => load_disponibilite())
     onMounted(() => load_disponibilite())
-    
+    */
 </script>
 
 <style>

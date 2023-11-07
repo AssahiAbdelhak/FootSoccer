@@ -65,7 +65,7 @@ const res = await axios.create({
         headers: {
             Authorization : `Bearer ${localStorage.getItem('token')}`
             }
-    }).patch('http://localhost:8080/users/'+userStore.user.id_utilisateur,object.value)
+    }).patch('http://localhost:8080/users/'+userStore.user.id_utilisateur, object.value)
     console.log(res.data)
 }catch(e){
     location.href = 'http://localhost:5173/sign-in'
