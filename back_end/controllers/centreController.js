@@ -1,14 +1,15 @@
-
 import { db } from "../dataBase/db.js"
 import { addCentreSchema } from "../requestValidation/centreSchema.js"
+import fs from 'fs'
+import util from 'util'
+import { pipeline } from 'stream'
+
+const pump = util.promisify(pipeline)
 
 export const getAllCentres = async (req,res) => {
-    console.log("getting all centres ...")
     res.header("Access-Control-Allow-Origin", "*");
-    console.log(req.query.filter)
     let attributes = req.query.filter ? req.query.filter.split(',') : '*'
     let elems = await db('centres').select(...attributes);
-    console.log(elems.length)
     res.status(200).send({
         success : true,
         length : elems.length,
@@ -19,7 +20,8 @@ export const getAllCentres = async (req,res) => {
 
 export const getCentre = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
-    let elem = await db('centres').select('*').where('id_centre','=',req.params.id);
+    let attributes = req.query.filter ? req.query.filter.split(',') : '*'
+    let elem = await db('centres').select(...attributes).where('id_centre','=',req.params.id);
     res.status(200).send({
         success : true,
         data : elem
@@ -27,24 +29,40 @@ export const getCentre = async (req,res) => {
 }
 
 export const addCentreTodb = async (req,res) => {
-    const {value,error} =  addCentreSchema.validate(req.body)
+    console.log('adding centre ...')
+    const file = await req.file()
+    await pump(file.file, fs.createWriteStream(`./public/uploads/${file.filename}`))
+    
+    let object ={}
+    Object.keys(file.fields).forEach((key) => {
+        object[key] = file.fields[key].value
+    })
+    object.image = 'uploads/'+file.fields.image.filename 
+    console.log(file.fields)
+    const {value,error} =  addCentreSchema.validate(object)
     if(!error){
+        console.log(value)
         try{
             await db("centres").insert({
-                nom_centre : value.nomCentre,
-                tarif : value.tarif
+                nom_centre : value.nom_centre,
+                adr_centre : value.adr_centre,
+                nb_terrains : value.nb_terrains,
+                tarif : value.tarif,
+                image : value.image
             })
             res.status(201).send({
                 success : true,
                 message : 'l\'element est ajouté'
             })
         }catch(err){
+            console.log(err)
             res.status(400).send({
                 success : false,
                 message : 'une erreur s\'est produite'
             })
         }
     }else{
+        console.log(error)
         res.status(400).send(
             {
                 success : false,
@@ -56,7 +74,6 @@ export const addCentreTodb = async (req,res) => {
 export const deleteCentreTodb = async (req,res) => {
     try{
         let elem = await db('centres').select('*').where('id_centre','=',req.params.id);
-        console.log(elem.length)
         if(elem.length == 0)
             return res.status(400).send({
                 success : false,
@@ -76,7 +93,7 @@ export const deleteCentreTodb = async (req,res) => {
 }
 
 export const updateCentreTodb = async (req,res) => {
-    let elem = await db('centres').select('nom_centre','tarif').where('id_centre','=',req.params.id);
+    let elem = await db('centres').select('nom_centre','tarif','adr_centre','nb_terrains').where('id_centre','=',req.params.id);
     let newObject = {
         ...elem[0],
         ...req.body
@@ -92,14 +109,12 @@ export const updateCentreTodb = async (req,res) => {
                 message : 'l\'element est modifié'
             })
         }catch(err){
-            console.log(err)
             res.status(400).send({
                 success : false,
                 message : 'une erreur s\'est produite'
             })
         }
     }else{
-        console.log(error)
         res.status(400).send(
             {
                 success : false,

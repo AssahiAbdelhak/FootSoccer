@@ -10,5 +10,6 @@ export const userSchema = joi.object({
     nb_notes : joi.number().integer().positive().allow(0),
     num_tel : joi.string().required().min(10).max(10),
     email : joi.string().required().case('lower'),
+    role : joi.string().default('utilisateur'),
     mot_de_passe: joi.string()
 })

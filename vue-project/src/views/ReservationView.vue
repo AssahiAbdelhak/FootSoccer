@@ -57,6 +57,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 import axios from 'axios'
 import { reactive, ref, watch } from 'vue';
+import {useRouter} from 'vue-router'
 import {useUserStore} from '../stores/user.js'
 
 const userStore = useUserStore()
@@ -70,6 +71,7 @@ let centre_id = ref(centre_prop == 'null' ? '' : centre_prop)
 let day = ref('')
 let hour = ref('')
 let centre = ref(null)
+const router = useRouter()
 
 let centres = (await axios.get('http://localhost:8080/centres?filter=nom_centre,id_centre,tarif,adr_centre')).data.data
 centre.value = centres.filter((a) => a.id_centre == centre_id.value)[0]
@@ -84,15 +86,21 @@ let generate = (x,y) => {
 watch(centre_id,async () => {
     centre.value = centres.filter((a) => a.id_centre == centre_id.value)[0]
 })
-watch(day,async () => {
+watch([day,centre_id],async () => {
+    if(day.value){
+        indisponibilites = (await axios.get('http://localhost:8080/reservation/terrain/'+centre_id.value+'?date='+dayjs(day.value).format('YYYY-MM-DD')+'&filter=debut')).data.data.map(
+            (a) => a['debut']);
+        let min = dayjs(day.value).format('YYYY-MM-DD') == dayjs().format('YYYY-MM-DD') ? Number(dayjs().format('HH'))+1 : 10
+        console.log(dayjs(day.value).format('YYYY-MM-DD') )
+        console.log(dayjs().format('YYYY-MM-DD'))
+        console.log(min)
+        console.log(indisponibilites)
+        console.log(availablehours.value)
+        availablehours.value = generate(min,20).filter((a) => indisponibilites.indexOf(a) == -1)
+        console.log(availablehours.value)
+    }
     console.log('day updated...')
-    indisponibilites = (await axios.get('http://localhost:8080/reservation/terrain/'+centre_id.value+'?date='+dayjs(day.value).format('YYYY-MM-DD')+'&filter=debut')).data.data.map(
-        (a) => a['debut']);
-    let min = dayjs(day.value).format('YYYY-MM-DD') == dayjs().format('YYYY-MM-DD') ? Number(dayjs().format('HH'))+1 : 10
-    console.log(dayjs(day.value).format('YYYY-MM-DD') )
-    console.log(dayjs().format('YYYY-MM-DD'))
-    console.log(min)
-    availablehours.value = generate(min,20).filter((a) => indisponibilites.indexOf(a) == -1)
+
 })
 
 const reserver = async () => {
@@ -109,6 +117,7 @@ const reserver = async () => {
         id_resa,
         id_utilisateur : userStore.user.id_utilisateur,
     })).data
+    router.push('/')
 }
 
 

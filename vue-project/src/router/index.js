@@ -5,11 +5,15 @@ import CreateAccount from '../views/CreateAccount.vue'
 import ReservationView from '../views/ReservationView.vue'
 import Logout from '../views/Logout.vue'
 import MonCompte from '../views/MonCompte.vue'
-import modifierCompteView from '../views/modifierCompteView.vue'
+import Dashboard from '../views/Dashboard.vue'
 import VerifyCompte from '../views/VerifyCompte.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import Centres from '../views/Centres.vue'
+import AddCentre from '../views/AddCentre.vue'
+import ModifyCentre from '../views/ModifyCentre.vue'
+import ModifyUser from '../views/ModifyUser.vue'
+import Test from '../views/Test.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +29,17 @@ const router = createRouter({
       component : Centres
     },
     {
+      path: '/centres/add/',
+      name: 'AddCentre',
+      component : AddCentre
+    },
+    {
+      path: '/centres/modify/:id',
+      name: 'ModifyCenter',
+      component : ModifyCentre,
+      props: true
+    },
+    {
       path: '/login',
       name: 'signIn',
       component : SignIn
@@ -33,6 +48,12 @@ const router = createRouter({
       path: '/register',
       name: 'createAccount',
       component : CreateAccount
+    },
+    {
+      path: '/users/modify/:id',
+      name: 'ModifyUser',
+      component : ModifyUser,
+      props : true
     },
     {
       path: '/logout',
@@ -61,9 +82,13 @@ const router = createRouter({
       name: 'monCompte',
       component: MonCompte,
     },{
-      path: '/mon_compte/modifier',
-      name: 'modifierCompteView',
-      component: modifierCompteView,
+      path: '/test',
+      name: 'Test',
+      component: Test,
+    },{
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: Dashboard,
     }, {
       path: '/user/verifyCompte/:id',
       name: 'VerifyCompte',

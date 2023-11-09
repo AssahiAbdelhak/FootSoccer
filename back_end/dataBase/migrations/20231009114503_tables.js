@@ -15,10 +15,10 @@ const ON_UPDATE_TIMESTAMP_FUNCTION = `
 $$ language 'plpgsql';
 `
 export const up = async function(knex) {
-    console.log(knex.fn.now(6))
         await knex.schema.createTable('centres',function(table) {
             table.increments('id_centre').primary();
             table.string('nom_centre').notNullable().unique();
+            table.string('image').unique().default('default.jpg');
             table.string('adr_centre').notNullable();
             table.integer('nb_terrains').default(1);
             table.float('tarif',3,1).notNullable();
@@ -28,8 +28,9 @@ export const up = async function(knex) {
         
         await knex.schema.createTable('utilisateurs',function(table) {
             table.increments('id_utilisateur').primary();
-            table.boolean('isVerified').defaultTo(false);
+            table.boolean('isVerified').defaultTo(true);
             table.string('nom_complet').notNullable();
+            table.string('role').checkIn(['admin','utilisateur']).notNullable();
             table.string('niveau').checkIn(['débutant','intermidiaire','confirmé']).notNullable();
             table.date('date_naiss').notNullable();
             table.string('num_tel').unique();

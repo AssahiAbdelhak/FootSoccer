@@ -53,8 +53,8 @@ const updateValues = async () => {
             }
     }).patch('http://localhost:8080/users/'+userStore.user.id_utilisateur, obj)).data.user
     console.log(data)
+    console.log('updateing surstore')
     userStore.setUser(data)
-    val.value = 'hi'
     props.onClose()
 }
 </script>

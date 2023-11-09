@@ -40,6 +40,8 @@ addEventListener("resize",(e) => {
     menu.value.style.display = 'flex'
 })
 
+const userStore = useUserStore()
+
 const liens = [
   {titre : 'accueil', lien : '/'},
   {titre : 'a propos', lien : '#about'},
@@ -51,8 +53,10 @@ const options = [
   {titre : 'mes Infos', lien : '/myAccount'},
   {titre : 'Déconnexion', lien : '/logout'},
 ]
-const userStore = useUserStore()
-console.log(userStore.title)
+if(userStore.user && userStore.user.role == 'admin'){
+  options.push({titre : 'Tableau de bord',lien : '/dashboard'})
+}
+console.log(userStore.user)
 watch(menuIsClosed,() => {
   menuIsClosed.value ? menu.value.style.display = 'flex' : menu.value.style.display = 'none'
   } )

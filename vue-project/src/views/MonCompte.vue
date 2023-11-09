@@ -6,7 +6,7 @@
         <h1 class="text-5xl uppercase font-normal my-12">mon profile</h1>
         <div class="flex flex-wrap justify-between gap-24">
             <InfoField infoName="nom complet" :onModify="() => showModal('Nom','text','nom_complet')" :info=userStore.user.nom_complet />
-            <InfoField infoName="date de naissance" :onModify="() => showModal('Date de naissance','date','date_naiss')" :info="userStore.user.date_naiss.substring(0,10).split('-').join('/')" />
+            <InfoField infoName="date de naissance" :onModify="() => showModal('Date de naissance','date','date_naiss')" :info="date_naiss.substring(0,10).split('-').join('/')" />
             <InfoField infoName="email" :onModify="() => showModal('email','email','email')" :info=userStore.user.email />
             <InfoField infoName="numéro téléphone" :onModify="() => showModal('numéro de téléphone','tel','num_tel')" :info=userStore.user.num_tel />
             <InfoField infoName="niveau" :onModify="() => showModal('niveau','select','niveau')" :info=userStore.user.niveau />
@@ -28,6 +28,9 @@ import PopUpModal from'../components/PopUpModal.vue'
 import Card from '../components/Card.vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from "dayjs/plugin/timezone"
+import advanced from "dayjs/plugin/advancedFormat"
 import { ref, watch } from 'vue'
 import Navigation from '../components/navigation.vue'
 import {useUserStore} from '../stores/user.js'
@@ -39,6 +42,10 @@ const dbAttr = ref('')
 const inputType = ref('')
 const options = ref([])
 
+dayjs.extend(timezone)
+dayjs.extend(utc)
+dayjs.extend(advanced)
+
 const showModal = (tit,type,attr) => {
     show.value = true
     title.value = tit
@@ -49,11 +56,11 @@ const showModal = (tit,type,attr) => {
 }
 const hideModal = () => {
     show.value = false
+    date_naiss.value = dayjs(userStore.user.date_naiss).tz('Europe/Paris').format('YYYY-MM-DD')
 }
 
 const userStore = useUserStore()
-
-const date_naiss = ref()
+const date_naiss = ref(dayjs(userStore.user.date_naiss).tz('Europe/Paris').format('YYYY-MM-DD'))
 let id = userStore.user.id_utilisateur
 
 const reservation = (await axios.get('http://localhost:8080/reservation/joueur/'+id)).data.data

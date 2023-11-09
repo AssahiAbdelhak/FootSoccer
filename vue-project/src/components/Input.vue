@@ -4,6 +4,8 @@
     <select class="input w-full px-5 py-2.5" v-if="props.type == 'select'" :value="modelValue" @input="updateValue" >
         <option v-for="option in props.options" class="bg-black" :key="option" :value="option">{{option}}</option>
     </select>
+    <input v-else-if="type == 'file'" @change="updateValue"  class="input w-full px-5 py-2.5 bg-black" id="file_input" type="file">
+    <input v-else-if="type == 'date'" :value="modelValue" @input="updateValue" class="input w-full px-5 py-2.5 bg-black" :type="props.type ? props.type : 'text' " :placeholder="props.title">
     <input v-else :value="modelValue" @input="updateValue" class="input w-full px-5 py-2.5 bg-black" :type="props.type ? props.type : 'text' " :placeholder="props.title">
     <router-link v-if="props.help" :to="props.link" class="text-blue-500 text-right mt-3">{{_.capitalize(props.help)}}</router-link>
   </div>
@@ -20,7 +22,10 @@ const inputValue = ref('')
 const emits  = defineEmits(['update:modelValue'])
 
 const updateValue = (event) => {
-  emits('update:modelValue',event.target.value)
+  if(props.type == 'file')
+    emits('update:modelValue',event.target.files[0])
+  else
+    emits('update:modelValue',event.target.value)
 
 }
 

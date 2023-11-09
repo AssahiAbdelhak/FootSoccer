@@ -10,7 +10,7 @@
         <router-link :to=href class="btn mt-10">réserver dans ce centre</router-link>
     </div>
     <div class="image w-1/2">
-        <img src="../images/centre.jpg" alt="">
+        <img :src="'http://localhost:8080/'+centre.image" alt="Centre's image">
     </div>
   </div>
 </template>

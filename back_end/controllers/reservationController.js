@@ -37,9 +37,6 @@ export const getAllTerrainsReserves = async (req,res) => {
     })
 }
 export const getReservationInfos = async (req,res) => {
-    console.log(req.params)
-    
-    
     let elem = await db('resa_terrain').select('*').where({
         id_resa : req.params.id
     }).first();
@@ -49,15 +46,12 @@ export const getReservationInfos = async (req,res) => {
     })
 }
 export const addTerrainsReserves = async (req,res) => {
-    console.log('to this')
-    console.log(req.body)
     try{
         let elems = await db('resa_terrain').insert({
         id_centre : req.body.id_centre,
         date: req.body.date,
         debut: req.body.debut,
     }).returning('id_resa');
-    console.log(elems)
     res.status(200).send({
         success : true,
         id_resa: elems[0].id_resa
@@ -69,19 +63,14 @@ export const addTerrainsReserves = async (req,res) => {
 
 const deletePassedReser = async () => {
     let elemToDelete = await db('resa_terrain').where('date', '<', dayjs().format('YYYY-MM-DD')).select('id_resa')
-    console.log('elemTodelete 1',elemToDelete)
     for(let i = 0 ; i < elemToDelete.length ; i++){
-        console.log(i)
         await db('resa_utilisateurs').where('id_resa', '=', elemToDelete[i].id_resa).delete()
         
     }
     await db('resa_terrain').where('date', '<', dayjs().format('YYYY-MM-DD')).delete()
     elemToDelete = await db('resa_terrain').where('date', '=', dayjs().format('YYYY-MM-DD')).andWhere('debut','<',dayjs().format('HH')).select('id_resa')
-    console.log('elemTodelete 2',elemToDelete)
     for(let i = 0 ; i < elemToDelete.length ; i++){
-        console.log(i)
         await db('resa_utilisateurs').where('id_resa', '=', elemToDelete[i].id_resa).delete()
-        
     }
     await db('resa_terrain').where('date', '=', dayjs().format('YYYY-MM-DD')).andWhere('debut','<',dayjs().format('HH')).delete()
 }
@@ -99,7 +88,6 @@ export const getAllJoueursReserves = async (req,res) => {
     })
 }
 export const addJoueursReserves = async (req,res) => {
-    console.log(req.body)
     await db('resa_utilisateurs').insert({
         id_resa: req.body.id_resa,
         id_utilisateur: req.body.id_utilisateur

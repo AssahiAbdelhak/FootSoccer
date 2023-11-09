@@ -4,7 +4,7 @@
         <div class="flex flex-col py-16">
             <h1 class="text-5xl mb-8 leading-relaxed font-normal">Bienvenue sur <a href="#contact"><span class="text-red-500">FOOT SOCCER</span></a>, votre destination pour la réservation de terrains de football en ligne !</h1>
             <h3 class="uppercase text-2xl font-light mb-28 ">Facilitez votre réservation, jouez au football !</h3>
-            <router-link to="#" class="btn">réserver</router-link>
+            <router-link to="/reservation/centre=null" class="btn">réserver</router-link>
             <div class="fixed right-8 top-60 flex flex-col gap-3">
                 <a :href="lien.href" v-for="lien in liens" :key="lien.id" @click="active=lien.id">
                     <span class="block h-5 w-5 border-2 rounded-full border-white " :class=" lien.id == active ? 'bg-white' : ''"></span>
