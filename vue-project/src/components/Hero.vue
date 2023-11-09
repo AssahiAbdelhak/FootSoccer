@@ -69,4 +69,7 @@ if(token != null){
     background-size: cover;
     background-position: center;
 }
+#hero{
+    margin-top: 84px;
+}
 </style>

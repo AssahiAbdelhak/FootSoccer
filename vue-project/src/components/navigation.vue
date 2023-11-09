@@ -1,5 +1,6 @@
 <template>
-    <nav class="flex items-center flex-wrap bg-black px-20 py-6 justify-between font-normal">
+<div class="fixed w-screen z-10 top-0 left-0">
+    <nav class="flex  items-center flex-wrap bg-black px-20 py-6 justify-between font-normal">
   <div class="flex items-center flex-shrink-0 text-white mr-6 ">
     <span class="font-semibold text-3xl text-red-500 tracking-tight"><router-link to="/">FOOT SOCCER. </router-link></span>
   </div>
@@ -13,18 +14,14 @@
         <a href="/#about" class="cursor-pointer block lg:inline-block text-sm uppercase lg:mt-0 transition-all text-white hover:text-red-500">a propos</a>
         <router-link to="/centres" class="cursor-pointer block lg:inline-block text-sm uppercase lg:mt-0 transition-all text-white hover:text-red-500">centres</router-link>
         <router-link to="/reservation/centre=null" class="cursor-pointer block lg:inline-block text-sm uppercase lg:mt-0 transition-all text-white hover:text-red-500">reservation</router-link>
-        <a href="/#contact" class="cursor-pointer block lg:inline-block text-sm uppercase lg:mt-0 transition-all text-white hover:text-red-500">contact</a>
-      
+        <a href="/#contact" class="cursor-pointer block lg:inline-block text-sm uppercase lg:mt-0 transition-all text-white hover:text-red-500">contact</a>  
      <div>
       <router-link v-if="!userStore.user" to="/login" class="text-red-500 text-xl hover:text-red-700"><i class="fa-solid fa-user fa-lg mr-3"></i>Connexion</router-link>
-      <DropDown v-else title="Mon Compte" :options=options />  
-      
+      <DropDown v-else title="Mon Compte" :options=options />    
     </div>
     </div>
-  
-  
 </nav>
-
+</div>
 </template>
 
 <script setup>

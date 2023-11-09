@@ -21,10 +21,13 @@
 import Navigation from '../components/navigation.vue'
 import Input from '../components/Input.vue'
 import Error from '../components/Error.vue'
+import {useRouter} from 'vue-router'
 import {sendEmail} from '../utils/fonctions.js'
 import axios from 'axios'
 import {ref, watch} from 'vue'
 import emailjs from '@emailjs/browser';
+
+const router = useRouter()
 
 const options = ["débutant","intermidiaire", "confirmé"]
 
@@ -50,6 +53,10 @@ const creerUser = async () => {
         link : 'http://localhost:5173/user/verifyCompte/'+res,
         to : objet.value.email
     })
+
+    alert('On vous a envoyé un mél de confirmation! vérifier vos spams!!!!')
+
+    router.push('/login')
 
 }
 
