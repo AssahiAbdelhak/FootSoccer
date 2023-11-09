@@ -1,13 +1,12 @@
 <template>
-  <div class="text-white">
-    <Navigation />
+  <div class="text-white div">
     <PopUpFormVue :show="show" :id="id" :updateFunc="updateFunc" :element="element" :attributes="attributes" />
-    <div class="px-20">
+    <div class="div px-20">
       
       <Table title="centres" idAttr="id_centre" :onDelete="deleteCenter" :onUpdate="update" :possibleAdd="true" :onFilter="centresFilter"  :attributes="centreAttributes" preLink="/centres/" :data="centres" />
     </div>
     <div class="px-20">
-      <Table title="users" idAttr="id_utilisateur" :onFilter="usersFilter" :attributes="userAttributes" preLink="/users/" :data="users" />
+      <Table title="users" idAttr="id_utilisateur" :onDelete="deleteUser" :onFilter="usersFilter" :attributes="userAttributes" preLink="/users/" :data="users" />
     </div>
     <Footer />
   </div>
@@ -69,14 +68,30 @@ const deleteCenter = async (id) => {
         console.log(e)
     }
 }
-
-const updateCenter = async (id,elem) => {
+const deleteUser = async (id) => {
   try{
       const res = await axios.create({
             headers: {
                 Authorization : `Bearer ${localStorage.getItem('token')}`
                 }
-        }).patch('http://localhost:8080/centres/'+id,elem);
+        }).delete('http://localhost:8080/users/'+id);
+      users.value = (await axios.get('http://localhost:8080/users?filter=id_utilisateur,date_naiss,nom_complet,email,role,num_tel')).data.data
+      
+    }catch(e){
+        console.log(e)
+    }
+}
+
+const updateCenter = async (id,elem) => {
+  try{
+      console.log(elem.value)
+      console.log('updating elem with id == ',id)
+      const res = await axios.create({
+            headers: {
+                Authorization : `Bearer ${localStorage.getItem('token')}`
+                }
+        }).patch('http://localhost:8080/centres/'+id,elem.value);
+        
       centres.value = (await axios.get('http://localhost:8080/centres?filter=id_centre,nom_centre,adr_centre,nb_terrains,tarif')).data.data
       
     }catch(e){
@@ -115,5 +130,7 @@ const update = async (idVal,title,elem) => {
 </script>
 
 <style>
-
+.div{
+  margin-top: 150px;
+}
 </style>

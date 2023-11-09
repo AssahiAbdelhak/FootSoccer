@@ -3,6 +3,7 @@ import { addCentreSchema } from "../requestValidation/centreSchema.js"
 import fs from 'fs'
 import util from 'util'
 import { pipeline } from 'stream'
+import { sendData, sendErrorResponse } from "../utils/fonctions.js"
 
 const pump = util.promisify(pipeline)
 
@@ -10,11 +11,7 @@ export const getAllCentres = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
     let attributes = req.query.filter ? req.query.filter.split(',') : '*'
     let elems = await db('centres').select(...attributes);
-    res.status(200).send({
-        success : true,
-        length : elems.length,
-        data : elems
-    })
+    return sendData(res,200,elems);
 }
 
 
@@ -22,14 +19,10 @@ export const getCentre = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
     let attributes = req.query.filter ? req.query.filter.split(',') : '*'
     let elem = await db('centres').select(...attributes).where('id_centre','=',req.params.id);
-    res.status(200).send({
-        success : true,
-        data : elem
-    })
+    return sendData(res,200,elem)
 }
 
 export const addCentreTodb = async (req,res) => {
-    console.log('adding centre ...')
     const file = await req.file()
     await pump(file.file, fs.createWriteStream(`./public/uploads/${file.filename}`))
     
@@ -38,7 +31,6 @@ export const addCentreTodb = async (req,res) => {
         object[key] = file.fields[key].value
     })
     object.image = 'uploads/'+file.fields.image.filename 
-    console.log(file.fields)
     const {value,error} =  addCentreSchema.validate(object)
     if(!error){
         console.log(value)
@@ -50,24 +42,14 @@ export const addCentreTodb = async (req,res) => {
                 tarif : value.tarif,
                 image : value.image
             })
-            res.status(201).send({
-                success : true,
-                message : 'l\'element est ajouté'
-            })
+            return sendData(res,201,'l\'element est ajouté')
         }catch(err){
             console.log(err)
-            res.status(400).send({
-                success : false,
-                message : 'une erreur s\'est produite'
-            })
+            return sendErrorResponse(res,400,'une erreur s\'est produite')
         }
     }else{
         console.log(error)
-        res.status(400).send(
-            {
-                success : false,
-                message : 'donnees incompletes ou invalides'
-            })
+        return sendErrorResponse(res,400,'donnees incompletes ou invalides')
     }
 }
 
@@ -75,20 +57,14 @@ export const deleteCentreTodb = async (req,res) => {
     try{
         let elem = await db('centres').select('*').where('id_centre','=',req.params.id);
         if(elem.length == 0)
-            return res.status(400).send({
-                success : false,
-                message : `l'element avec l'id ${req.params.id} n'existe pas`
-            })
+            return sendErrorResponse(res,400,`l'element avec l'id ${req.params.id} n'existe pas`)    
+        console.log('here')
+        await db('resa_terrain').delete().where('id_centre','=',req.params.id)
         await db('centres').delete().where('id_centre','=',req.params.id);
-        res.status(204).send({
-            success : true,
-            message : 'l\'element est supprime'
-        })
+        return sendData(res,204,'l\'element est supprime')
     }catch(e){
-        res.status(400).send({
-            success : false,
-            message : `une erreur s'est produite`
-        })
+        console.log(e)
+        return sendErrorResponse(res,400,`une erreur s'est produite`)
     }
 }
 
@@ -101,24 +77,17 @@ export const updateCentreTodb = async (req,res) => {
     const {value,error} =  addCentreSchema.validate(newObject)
     if(!error){
         try{
+            console.log(value)
             await db("centres")
             .where('id_centre','=',req.params.id)
             .update(value)
-            res.status(201).send({
-                success : true,
-                message : 'l\'element est modifié'
-            })
+            return sendData(res,201,'l\'element est modifié')
         }catch(err){
-            res.status(400).send({
-                success : false,
-                message : 'une erreur s\'est produite'
-            })
+            console.log(err)
+            return sendErrorResponse(res,400,'une erreur s\'est produite')
         }
     }else{
-        res.status(400).send(
-            {
-                success : false,
-                message : 'donnees invalides'
-            })
+        console.log(error)
+        return sendErrorResponse(res,400,'donnees invalides')
     }
 }

@@ -31,3 +31,17 @@ export const sendWhatsappMessage = async (req,res) => {
         console.log(e,"error")
     }
 }
+
+export const sendErrorResponse = (res,statusCode,message) => {
+    return res.status(statusCode).send({
+        success : false,
+        message
+    })
+}
+export const sendData = (res,statusCode,data) => {
+    return res.status(statusCode).send({
+        success : true,
+        length : data.length,
+        data
+    })
+}

@@ -1,7 +1,6 @@
 <template>
   <div class="bg-black text-white">
-    <Navigation />
-    <h1 class="text-center uppercase text-3xl my-16">découvrez nos centres <span class="text-red-500">foot soccer</span> présents en france</h1>
+    <h1 class="text-center mt-40 uppercase text-3xl my-16">découvrez nos centres <span class="text-red-500">foot soccer</span> présents en france</h1>
     <div class="px-20 flex flex-col gap-8">
         <Centre v-for="centre in centres" :key="centre.id" :centre="centre" :flip="flip = !flip" />
     </div>

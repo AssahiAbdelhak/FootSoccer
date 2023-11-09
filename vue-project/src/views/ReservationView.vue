@@ -1,8 +1,7 @@
 <template>
     <div class="text-white bg-black h-screen">
-        <Navigation />
         <div class="px-20 ">
-            <h1 class="uppercase text-4xl font-normal text-center my-20">reservez votre terrain de football en quelques étapes faciles</h1>
+            <h1 class="uppercase text-4xl  mt-40 font-normal text-center mb-20">reservez votre terrain de football en quelques étapes faciles</h1>
             <div class="flex gap-10">
                 <div class="w-2/3">
                     <h1 class="border-b-2 py-6">Sélectionnnez {{centre_prop == 'null' ? 'un centre, ' : ''}}une date et une heure</h1>

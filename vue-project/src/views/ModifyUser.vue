@@ -1,6 +1,5 @@
 <template>
     <div class="text-white bg-black ">
-        <Navigation />
         <div class="px-20 w-full flex flex-col items-center" style="height : calc(100vh - 84px)">
             <h1 class="text-center mt-28 mb-20 text-5xl">modifier le compte</h1>
             <div class="flex w-full justify-between flex-wrap">

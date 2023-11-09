@@ -1,6 +1,5 @@
 <template>
   <div class="text-white bg-black ">
-        <Navigation />
         <div class="px-20 w-full flex flex-col items-center" style="height : calc(100vh - 84px)">
             <h1 class="text-center mt-28 mb-20 text-5xl">ajoutez un nouveau centre</h1>
             <div class="flex w-full justify-between flex-wrap">
@@ -36,7 +35,7 @@ const updateCentre = async () => {
             headers: {
                 Authorization : `Bearer ${localStorage.getItem('token')}`
                 }
-        }).patch('http://localhost:8080/centres/39',centre.value);
+        }).patch('http://localhost:8080/centres/'+props.id,centre.value);
         router.push('/dashboard')
     }catch(e){
         console.log(e)

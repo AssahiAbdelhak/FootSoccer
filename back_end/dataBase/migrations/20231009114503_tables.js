@@ -18,7 +18,7 @@ export const up = async function(knex) {
         await knex.schema.createTable('centres',function(table) {
             table.increments('id_centre').primary();
             table.string('nom_centre').notNullable().unique();
-            table.string('image').unique().default('default.jpg');
+            table.string('image').default('default.jpg');
             table.string('adr_centre').notNullable();
             table.integer('nb_terrains').default(1);
             table.float('tarif',3,1).notNullable();

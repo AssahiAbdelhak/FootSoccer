@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js'
 import timezone from 'dayjs/plugin/timezone.js'
 import advanced from 'dayjs/plugin/advancedFormat.js'
+import { sendData, sendErrorResponse } from '../utils/fonctions.js';
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -20,11 +21,7 @@ export const getAllUsers = async (req,res) => {
     else
         elems = await db('utilisateurs').select(...attributes);
     elems.forEach((elem) => elem.date_naiss = dayjs(elem.date_naiss).tz('Europe/Paris').format('YYYY-MM-DD'))
-    res.status(200).send({
-        success : true,
-        length : elems.length,
-        data : elems
-    })
+    return sendData(res,200,elems)
 }
 export const updatePassword = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -36,38 +33,14 @@ export const updatePassword = async (req,res) => {
         message : "mot de passe mis à jour"
     })
 }
-export const getAllUsersCount = async (req,res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    let elems = await db('utilisateurs').select('*');
-    res.status(200).send({
-        success : true,
-        length : elems.length
-    })
-}
-export const userExiste = async (req,res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    let elems = await db('utilisateurs').select('*').where('id_utilisateur','=',req.params.id);
-    if(elems.length != 0){
-        res.status(200).send({
-            success: true
-        })
-    }else{
-        res.status(400).send({
-            success: false
-        })
-    }
-    
-}
+
 
 export const getUser = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
     let attributes = req.query.filter ? req.query.filter.split(',') : '*'
     let elem = await db('utilisateurs').select(attributes).where('id_utilisateur','=',req.params.id);
     elem.date_naiss =  dayjs(elem.date_naiss).tz('Europe/Paris').format('YYYY-MM-DD')
-    res.status(200).send({
-        success : true,
-        data : elem
-    })
+    return sendData(res,200,elem)
 }
 
 export const addUserTodb = async (req,res) => {
@@ -78,24 +51,19 @@ export const addUserTodb = async (req,res) => {
             let hash = await argons2.hash(value.mot_de_passe)
             value.mot_de_passe = hash
             let id_user = (await db("utilisateurs").insert(value).returning('id_utilisateur'))[0].id_utilisateur
+    
             res.status(201).send({
                 success : true,
                 message : 'l\'element est ajouté',
                 id_user 
             })
         }catch(err){
-            res.status(400).send({
-                success : false,
-                message : 'une erreur s\'est produite'
-            })
+            return sendErrorResponse(res,400,'une erreur s\'est produite')
         }
-    }else{
-        res.status(400).send(
-            {
-                success : false,
-                message : 'donnees incompletes ou invalides'
-            })
     }
+    else
+        return sendErrorResponse(res,400,'donnees incompletes ou invalides')
+    
 }
 export const verifyUser = async (req,res) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -126,12 +94,14 @@ export const deleteUserTodb = async (req,res) => {
                 success : false,
                 message : `l'element avec l'id ${req.params.id} n'existe pas`
             })
-        await db('terrains').delete().where('id_utilisateur','=',req.params.id);
+        await db('resa_utilisateurs').delete().where('id_utilisateur','=',req.params.id);
+        await db('utilisateurs').delete().where('id_utilisateur','=',req.params.id);
         res.status(204).send({
             success : true,
             message : 'l\'element est supprime'
         })
     }catch(e){
+        console.log(e)
         res.status(400).send({
             success : false,
             message : `une erreur s'est produite`

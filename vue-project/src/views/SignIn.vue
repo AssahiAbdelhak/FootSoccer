@@ -1,6 +1,5 @@
 <template>
     <div class="text-white bg-black h-screen">
-        <Navigation />
         <div class="flex flex-col items-center" style="height : calc(100vh - 84px)">
             <h1 class="text-center mt-36 mb-28 text-5xl">Connectez vous à votre compte</h1>
             <Error v-if="error" :message="error" />

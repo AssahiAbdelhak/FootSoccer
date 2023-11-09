@@ -38,7 +38,7 @@ addEventListener("resize",(e) => {
 })
 
 const userStore = useUserStore()
-
+console.log(userStore.user)
 const liens = [
   {titre : 'accueil', lien : '/'},
   {titre : 'a propos', lien : '#about'},

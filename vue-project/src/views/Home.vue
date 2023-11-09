@@ -1,6 +1,5 @@
 <template>
     <div class="body flex flex-col bg-red-300">
-        <Navigation />
         <Hero />
         <Citation />
         <div id="about" class="flex flex-col items-center py-16 lg:items-start lg:flex-row justify-between px-20 bg-black">

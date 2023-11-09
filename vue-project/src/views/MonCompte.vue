@@ -1,6 +1,5 @@
 <template>
 <div>
-    <Navigation />
     <PopUpModal :show="show" :dbAttr="dbAttr" :inputType="inputType" :options="options" :onClose="hideModal" :title="title" />
     <div class="text-white px-20 py-16 bg-black">
         <h1 class="text-5xl uppercase font-normal my-12">mon profile</h1>
