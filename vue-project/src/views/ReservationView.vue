@@ -60,6 +60,9 @@ import {useRouter} from 'vue-router'
 import {useUserStore} from '../stores/user.js'
 
 const userStore = useUserStore()
+const router = useRouter()
+
+
 
 dayjs.locale('fr')
 let indisponibilites,availablehours = ref([])
@@ -70,11 +73,13 @@ let centre_id = ref(centre_prop == 'null' ? '' : centre_prop)
 let day = ref('')
 let hour = ref('')
 let centre = ref(null)
-const router = useRouter()
 
 let centres = (await axios.get('http://localhost:8080/centres?filter=nom_centre,id_centre,tarif,adr_centre')).data.data
 centre.value = centres.filter((a) => a.id_centre == centre_id.value)[0]
 
+if(userStore.user == null){
+    router.push('/login')
+}
 
 let generate = (x,y) => {
     let arr =[]
@@ -103,6 +108,9 @@ watch([day,centre_id],async () => {
 })
 
 const reserver = async () => {
+    if(userStore.user == null){
+        router.push('/login')
+    }
     if(hour.value == '')
         return 
     console.log('pass')

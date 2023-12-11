@@ -3,8 +3,8 @@
         <div class="flex flex-col items-center" style="height : calc(100vh - 84px)">
             <h1 class="text-center mt-36 mb-28 text-5xl">Connectez vous à votre compte</h1>
             <Error v-if="error" :message="error" />
-            <Input v-model="object.email" title="adresse mail" />
-            <Input v-model="object.password" title="mot de passe" link="/forgotPassword" type="password" help="mot de passe oublié ?" />
+            <Input :required="true" v-model="object.email" title="adresse mail" />
+            <Input :required="true" v-model="object.password" title="mot de passe" link="/forgotPassword" type="password" help="mot de passe oublié ?" />
             <p class="font-light">Vous n’avez pas de compte ? <router-link to="/register">créez-en un</router-link></p>
             <button class="btn mt-5" @click="connectUser">se connecter</button>
         </div>

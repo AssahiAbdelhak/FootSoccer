@@ -6,7 +6,7 @@
     @apply bg-transparent border-2 py-2.5 px-5 outline-none
 }
 .sm-nav-links{
-    @apply  w-screen bg-black left-0 flex flex-col items-start gap-3 mt-10 justify-start
+    @apply  w-screen bg-black left-0 flex-col items-start gap-3 mt-10 justify-start
 }
 .lg-nav-links{
     @apply lg:w-fit lg:flex lg:relative lg:flex-row lg:flex-grow lg:h-fit lg:mt-0 lg:justify-between lg:items-center

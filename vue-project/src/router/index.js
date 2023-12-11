@@ -1,19 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import SignIn from '../views/SignIn.vue'
-import CreateAccount from '../views/CreateAccount.vue'
-import ReservationView from '../views/ReservationView.vue'
-import Logout from '../views/Logout.vue'
-import MonCompte from '../views/MonCompte.vue'
-import Dashboard from '../views/Dashboard.vue'
-import VerifyCompte from '../views/VerifyCompte.vue'
-import ForgotPassword from '../views/ForgotPassword.vue'
-import ResetPassword from '../views/ResetPassword.vue'
-import Centres from '../views/Centres.vue'
-import AddCentre from '../views/AddCentre.vue'
-import ModifyCentre from '../views/ModifyCentre.vue'
-import ModifyUser from '../views/ModifyUser.vue'
-import Test from '../views/Test.vue'
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,78 +6,75 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component : Home
+      component: () => import('../views/Home.vue')
     },
     {
       path: '/centres',
       name: 'Centres',
-      component : Centres
+      component : () => import('../views/Centres.vue')
     },
     {
       path: '/centres/add/',
       name: 'AddCentre',
-      component : AddCentre
+      component : () => import('../views/AddCentre.vue')
     },
     {
       path: '/centres/modify/:id',
       name: 'ModifyCenter',
-      component : ModifyCentre,
+      component : () => import('../views/ModifyCentre.vue'),
       props: true
     },
     {
       path: '/login',
       name: 'signIn',
-      component : SignIn
+      component : () => import('../views/SignIn.vue')
     },
     {
       path: '/register',
       name: 'createAccount',
-      component : CreateAccount
+      component : () => import('../views/CreateAccount.vue')
     },
     {
       path: '/users/modify/:id',
       name: 'ModifyUser',
-      component : ModifyUser,
+      component : () => import('../views/ModifyUser.vue'),
       props : true
     },
     {
       path: '/logout',
       name: 'logout',
-      component : Logout,
+      component : () => import('../views/Logout.vue'),
     },
     {
       path: '/forgotPassword',
       name: 'forgotPassword',
-      component : ForgotPassword
+      component : () => import('../views/ForgotPassword.vue')
     },
     {
       path: '/resetpassword/:id',
       name: 'resetpassword',
-      component : ResetPassword,
+      component : () => import('../views/ResetPassword.vue'),
       props : true
     },
     {
       path: '/reservation/:centre',
       name: 'reservation',
-      component : ReservationView,  
+      component : () => import('../views/ReservationView.vue'),  
       props : true
     },
      {
       path: '/myAccount',
       name: 'monCompte',
-      component: MonCompte,
-    },{
-      path: '/test',
-      name: 'Test',
-      component: Test,
-    },{
+      component: () => import('../views/MonCompte.vue'),
+    },
+    {
       path: '/dashboard',
       name: 'Dashboard',
-      component: Dashboard,
+      component: () => import('../views/Dashboard.vue'),
     }, {
       path: '/user/verifyCompte/:id',
       name: 'VerifyCompte',
-      component: VerifyCompte,
+      component: () => import('../views/VerifyCompte.vue'),
       props: true
     }
   ]

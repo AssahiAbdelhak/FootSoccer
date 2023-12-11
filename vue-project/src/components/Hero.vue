@@ -1,6 +1,6 @@
 <template>
   <div id="hero">
-    <div class="relative px-20 bg-black text-white w-screen font-normal">
+    <div class="relative px-20 bg-[#222] text-white w-screen font-normal">
         <div class="flex flex-col py-16">
             <h1 class="text-5xl mb-8 leading-relaxed font-normal">Bienvenue sur <a href="#contact"><span class="text-red-500">FOOT SOCCER</span></a>, votre destination pour la réservation de terrains de football en ligne !</h1>
             <h3 class="uppercase text-2xl font-light mb-28 ">Facilitez votre réservation, jouez au football !</h3>

@@ -2,7 +2,7 @@
     <div class="body flex flex-col bg-red-300">
         <Hero />
         <Citation />
-        <div id="about" class="flex flex-col items-center py-16 lg:items-start lg:flex-row justify-between px-20 bg-black">
+        <div id="about" class="flex flex-col items-center py-16 lg:items-start lg:flex-row justify-between px-20 bg-[#222]">
             <div class="image w-2/5" style="height: 500px;">
                 
             </div>
@@ -21,7 +21,7 @@
                 <Temoignage />
             </div>
         </div>       
-        <div id="contact" class="contact bg-black flex justify-between px-20 py-16">
+        <div id="contact" class="contact bg-[#222] flex justify-between px-20 py-16">
             <div class="flex flex-col font-light text-sm gap-10 w-2/5">
                 <h1 class="uppercase text-4xl font-bold">foot soccer</h1>
                 <div>

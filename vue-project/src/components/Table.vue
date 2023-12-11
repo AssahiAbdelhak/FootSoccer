@@ -42,7 +42,7 @@ import SearchBar from "./SearchBar.vue"
 const props = defineProps(['attributes','onDelete','onUpdate','preLink','idAttr','title','onFilter','possibleAdd','data'])
 console.log('getting new props')
 console.log(props.title)
-const dataList = computed(() => props.onFilter(props.data,value.value))
+const dataList = computed(() => props.onFilter(props.data,value.value.toLowerCase()))
 
 const update = (id,title,elem) => {
     

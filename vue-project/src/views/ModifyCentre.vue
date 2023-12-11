@@ -30,6 +30,19 @@ const centre = ref((await axios.get('http://localhost:8080/centres/'+props.id+'?
 console.log(centre)
 const updateCentre = async () => {
     console.log('hello')
+    if(centre.value.nom_centre == ""){
+        error.value = "Veuillez saisir le nom de votre centre"
+        return;
+    }else if(centre.value.nb_terrains == ""){
+        error.value = "Veuillez saisir le nombre de terrains de votre centre"
+        return;
+    }else if(centre.value.adr_centre == ""){
+        error.value = "Veuillez saisir l'adresse de votre centre"
+        return;
+    }else if(centre.value.tarif == ""){
+        error.value = "Veuillez saisir le tarif"
+        return;
+    }
     try{
     const res = await axios.create({
             headers: {
